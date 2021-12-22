@@ -1,4 +1,5 @@
 import React from 'react';
+import {ReactComponent as Weight} from '../../svg/weight.svg';
 import './Node.scss'
 
 export interface INode {
@@ -24,16 +25,32 @@ interface IHandlers {
 type PropsNode =  Partial<Omit<INode, 'distance' | 'previousNode'> & IHandlers>
    
 
-export const Node: React.FC<PropsNode> = React.memo(({ row, col, isWeight, dimension, isStart, isEnd, isWall, onMouseDown, onMouseEnter, onMouseUp }) => {
+export const Node: React.FC<PropsNode> = React.memo((
+    { 
+        row, 
+        col, 
+        isWeight,
+        dimension, 
+        isStart, 
+        isEnd, 
+        isWall, 
+        onMouseDown, 
+        onMouseEnter, 
+        onMouseUp 
+    }) => {
     
     return (
         <div 
-            className={`Node ${ isStart ? 'Node__start': isEnd ? 'Node__end' : isWall ? 'Node__wall' : ''}`}
+            className={`Node ${ isStart ? 'Node__start': isEnd ? 'Node__end' : isWeight ? 'Node__weight' : isWall ? 'Node__wall' : ''}`}
             id={`node-${row}-${col}`}
             onMouseDown={onMouseDown}
             onMouseEnter={onMouseEnter}
             onMouseUp={onMouseUp}
             style={{'width': `${dimension}rem`, 'height': `${dimension}rem`}}
             >
+            {
+                isWeight && <Weight /> 
+            }
+            
         </div>
     )})

@@ -13,6 +13,7 @@ function App() {
     setStart(false)
     setEnd(false)
   }
+
   useEffect(() => {
     console.log(weight);
   }, [weight])

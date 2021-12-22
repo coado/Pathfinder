@@ -20,6 +20,8 @@
   }
 
   &__weight {
+    fill: white;
+    animation: weightAnimation 0.5s forwards;
   }
 
   &__visited {
@@ -67,6 +69,16 @@
   100% {
     transform: scale(1.05);
     // background-color: #9ea5a8;
+  }
+}
+
+@keyframes weightAnimation {
+  0% {
+    transform: scale(0.3);
+  }
+
+  100% {
+    transform: scale(1);
   }
 }
 

@@ -1,17 +1,19 @@
 import './Header.styles.scss';
+import {ReactComponent as Weight} from '../../svg/weight.svg';
 
 interface IHeader {
         startAlgorithm: () => void;
         setAlgorithm: (algorithm: string) => void;
         currentAlgorithm: string;
-        setWeight: () => void;
+        weight: boolean;
+        setWeight: (value: boolean) => void;
         setDimensions: (value: {
             rows: number;
             columns: number;
         }) => void 
     }
 
-export const Header: React.FC<IHeader> = ({ setWeight, setDimensions, startAlgorithm, setAlgorithm, currentAlgorithm }) => {
+export const Header: React.FC<IHeader> = ({ setWeight, weight, setDimensions, startAlgorithm, setAlgorithm, currentAlgorithm }) => {
     
     const handleSettingAlgorithm = (algorithm: string) => {
         setAlgorithm(algorithm)
@@ -23,6 +25,11 @@ export const Header: React.FC<IHeader> = ({ setWeight, setDimensions, startAlgor
             rows: value,
             columns: value*2
         });
+    }
+
+    const handleWeightClick = () => {
+       setWeight(!weight)
+
     }
 
     return (
@@ -40,7 +47,7 @@ export const Header: React.FC<IHeader> = ({ setWeight, setDimensions, startAlgor
                 </div>
 
                 <div className='Header__weight'>
-                    <img onClick={setWeight} className='Header__weight--icon' src='../images/weight.png' alt='weight' />
+                    <Weight onClick={handleWeightClick} className={`Header__weight--icon ${weight ? 'Header__weight--icon--active' : null}`} />
                 </div>
             </div>
             <button className='Header__startButton' onClick={startAlgorithm}> START </button>

@@ -151,15 +151,17 @@
     margin-left: 5rem;
     cursor: pointer;
 
-    &:hover img {
-      transform: scale(1.02);
-    }
-
     &--icon {
-      padding: 1rem;
+      margin-top: 0.5rem;
       width: 3.5rem;
       height: 3.5rem;
+      fill: white;
       transition: all 0.2s;
+
+      &--active {
+        fill: #362e39;
+        transform: scale(1.1);
+      }
     }
   }
 }

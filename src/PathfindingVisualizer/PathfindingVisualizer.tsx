@@ -14,6 +14,7 @@ interface IPathfindingVisualizer {
     setStart: (value: boolean) => void;
     setEnd: (value: boolean) => void;
     setWeight: (value: boolean) => void;
+
 }
 
 export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ setWeight, weight, end, setEnd, start, setStart, mousePressed, setMousePressed }) => {
@@ -174,15 +175,19 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ setWei
         const cacheGrid = grid.slice()
         let currentNode = cacheGrid[row][col]
         if (currentNode.isStart || currentNode.isEnd) return
-        currentNode.isWall = !currentNode.isWall
-        setGrid(cacheGrid)
+        if (weight) {
+            currentNode.isWeight = !currentNode.isWeight
+            setGrid(cacheGrid)
+        } else {
+            currentNode.isWall = !currentNode.isWall
+            setGrid(cacheGrid)
+        }
     }
 
     return (
-        
-        <div className='Board' onMouseUp={() => setMousePressed(false)}>
-                {/* <button onClick={visualizeDijkstra}>CLICK</button> */}
-                <Header setWeight={() => setWeight(true)} setDimensions={setDimensions} currentAlgorithm={algorithm} setAlgorithm={setAlgorithm} startAlgorithm={visualizeAlgorithm} />
+        <>
+            <Header setWeight={setWeight} weight={weight} setDimensions={setDimensions} currentAlgorithm={algorithm} setAlgorithm={setAlgorithm} startAlgorithm={visualizeAlgorithm} />
+            <div className='Board' onMouseUp={() => setMousePressed(false)}>
                 {
                     grid.map((row, rowIndex) => {
                         return <div className='Board__row' key={rowIndex} >
@@ -210,6 +215,6 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ setWei
                     })
                 }
             </div>
+            </>
    
 )}
-
