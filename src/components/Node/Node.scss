@@ -1,0 +1,102 @@
+.Node {
+  border: 0.2px solid rgba(255, 255, 255, 0.1);
+
+  &__start {
+    background-color: #24c25f !important;
+    box-shadow: 0px 0px 20px 5px #24c25f !important;
+    animation: edgeNodesAnimation 0.5s ease-out forwards;
+  }
+
+  &__end {
+    background-color: #e14518 !important;
+    box-shadow: 0px 0px 20px 5px #e14518 !important;
+    animation: edgeNodesAnimation 0.5s ease-out forwards;
+  }
+
+  &__wall {
+    background-color: #9ea5a8 !important;
+    box-shadow: 0px 0px 4px 0px #783ef5;
+    animation: wallAnimation 0.5s forwards;
+  }
+
+  &__weight {
+  }
+
+  &__visited {
+    animation: visitedAnimation 1.5s ease-out forwards;
+  }
+
+  &__shortestPath {
+    animation: shortestPathAnimation 0.8s ease-out forwards;
+    background-color: rgba(237, 255, 93, 0.8);
+  }
+}
+
+@keyframes visitedAnimation {
+  0% {
+    transform: scale(0.3);
+    background-color: rgba(0, 0, 66, 0.75);
+    border-radius: 100%;
+  }
+
+  50% {
+    background-color: rgba(84, 18, 235, 0.75);
+  }
+
+  75% {
+    transform: scale(1.2);
+    background-color: rgba(235, 18, 118, 0.75);
+  }
+
+  100% {
+    transform: scale(1);
+    background-color: rgba(160, 18, 236, 0.75);
+  }
+}
+
+@keyframes wallAnimation {
+  0% {
+    transform: scale(0.3);
+    border-radius: 100%;
+  }
+
+  75% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1.05);
+    // background-color: #9ea5a8;
+  }
+}
+
+@keyframes edgeNodesAnimation {
+  0% {
+    transform: scale(0.3);
+    border-radius: 100%;
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes shortestPathAnimation {
+  0% {
+    transform: scale(0.3);
+    border-radius: 100%;
+  }
+
+  75% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    box-shadow: 0px 0px 4px 0px white;
+    transform: scale(1);
+  }
+}
