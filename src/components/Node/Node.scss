@@ -21,7 +21,19 @@
 
   &__weight {
     fill: white;
-    animation: weightAnimation 0.5s forwards;
+    box-shadow: 0px 0px 4px 0px #783ef5;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 600;
+    background-color: #f27639;
+    user-select: none;
+    -ms-user-selec: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    animation: wallAnimation 0.5s forwards;
   }
 
   &__visited {
@@ -31,6 +43,7 @@
   &__shortestPath {
     animation: shortestPathAnimation 0.8s ease-out forwards;
     background-color: rgba(237, 255, 93, 0.8);
+    color: blueviolet;
   }
 }
 
@@ -68,17 +81,6 @@
 
   100% {
     transform: scale(1.05);
-    // background-color: #9ea5a8;
-  }
-}
-
-@keyframes weightAnimation {
-  0% {
-    transform: scale(0.3);
-  }
-
-  100% {
-    transform: scale(1);
   }
 }
 

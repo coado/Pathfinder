@@ -49,7 +49,7 @@ export const Node: React.FC<PropsNode> = React.memo((
             style={{'width': `${dimension}rem`, 'height': `${dimension}rem`}}
             >
             {
-                isWeight && <Weight /> 
+                isWeight && 10
             }
             
         </div>
