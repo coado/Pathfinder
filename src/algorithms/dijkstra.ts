@@ -31,8 +31,8 @@ const sortNodesByDistance = (unvisitedNodes: INode[]) => {
 const updateUnvisitedNeighbors = (currentNode: INode, grid: INode[][]) => {
     const unvisitedNeigbors = getUnvisitedNeighbors(currentNode, grid)
     for (const neighbor of unvisitedNeigbors) {
-        if (neighbor.isWeight) {
-            neighbor.distance = currentNode.distance + 10 + 1
+        if (neighbor.isWeight.active) {
+            neighbor.distance = currentNode.distance + neighbor.isWeight.value + 1
         } else {
             neighbor.distance = currentNode.distance + 1
         }

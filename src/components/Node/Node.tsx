@@ -1,5 +1,4 @@
 import React from 'react';
-import {ReactComponent as Weight} from '../../svg/weight.svg';
 import './Node.scss'
 
 export interface INode {
@@ -10,7 +9,10 @@ export interface INode {
     distance: number,
     isVisited: boolean,
     isWall: boolean,
-    isWeight: boolean,
+    isWeight: {
+        active: boolean,
+        value: number
+    },
     previousNode: INode | null,
 }
 
@@ -38,18 +40,37 @@ export const Node: React.FC<PropsNode> = React.memo((
         onMouseEnter, 
         onMouseUp 
     }) => {
+
+        const weightColor = (value: number) => {
+            if (value <= 20) return 'lightBlue'
+            if (value <= 40) return 'blue'
+            if (value <= 60) return 'orange'
+            if (value <= 80) return 'pink'
+            return 'red'
+        }
+
+        const getClass = () => {
+            if (isStart) return 'Node__start'
+            if (isEnd) return 'Node__end'
+            if (isWeight?.active) return `Node__weight Node__weight--${weightColor(isWeight.value)}`
+            if (isWall) return 'Node__wall'
+            return ''
+        }
     
     return (
         <div 
-            className={`Node ${ isStart ? 'Node__start': isEnd ? 'Node__end' : isWeight ? 'Node__weight' : isWall ? 'Node__wall' : ''}`}
+            className={`Node ${getClass()}`}
             id={`node-${row}-${col}`}
             onMouseDown={onMouseDown}
             onMouseEnter={onMouseEnter}
             onMouseUp={onMouseUp}
-            style={{'width': `${dimension}rem`, 'height': `${dimension}rem`}}
+            style={
+                {   'width': `${dimension}rem`, 
+                    'height': `${dimension}rem`,
+                }}
             >
             {
-                isWeight && 10
+                isWeight && isWeight.active && isWeight.value
             }
             
         </div>

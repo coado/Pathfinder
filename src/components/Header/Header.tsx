@@ -1,19 +1,27 @@
-import './Header.styles.scss';
+import React from 'react'; 
 import {ReactComponent as Weight} from '../../svg/weight.svg';
+import './Header.styles.scss';
 
 interface IHeader {
         startAlgorithm: () => void;
         setAlgorithm: (algorithm: string) => void;
         currentAlgorithm: string;
-        weight: boolean;
-        setWeight: (value: boolean) => void;
+        weight: {
+            active: boolean;
+            value: number;
+        };
+        setWeight: (value: {
+            active: boolean;
+            value: number;
+        }) => void;
         setDimensions: (value: {
             rows: number;
             columns: number;
-        }) => void 
+        }) => void;
+        clearBoard: () => void 
     }
 
-export const Header: React.FC<IHeader> = ({ setWeight, weight, setDimensions, startAlgorithm, setAlgorithm, currentAlgorithm }) => {
+export const Header: React.FC<IHeader> = ({ clearBoard, setWeight, weight, setDimensions, startAlgorithm, setAlgorithm, currentAlgorithm }) => {
     
     const handleSettingAlgorithm = (algorithm: string) => {
         setAlgorithm(algorithm)
@@ -27,10 +35,24 @@ export const Header: React.FC<IHeader> = ({ setWeight, weight, setDimensions, st
         });
     }
 
-    const handleWeightClick = () => {
-       setWeight(!weight)
-
+    const onChangeHandle = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = 10;
+        if (e.target.value) value = Number(e.target.value)
+        
+        setWeight({
+            ...weight,
+            value
+        })
     }
+
+    const handleWeightClick = () => {
+       setWeight({
+           ...weight,
+           active: !weight.active,
+       })
+    }
+    
+    const filterInputText = (e: React.KeyboardEvent<HTMLInputElement>) => (!/^[0-9]*$/.test(e.key)) ? e.preventDefault() : null;
 
     return (
         <div className='Header'>
@@ -47,14 +69,14 @@ export const Header: React.FC<IHeader> = ({ setWeight, weight, setDimensions, st
                 </div>
 
                 <div className='Header__weight'>
-                    <Weight onClick={handleWeightClick} className={`Header__weight--icon ${weight ? 'Header__weight--icon--active' : null}`} />
+                    <Weight onClick={handleWeightClick} className={`Header__weight--icon ${weight.active ? 'Header__weight--icon--active' : null}`} />
+                    <input className='Header__weight--input' onKeyPress={e => filterInputText(e)} onChange={e => onChangeHandle(e)} maxLength={2} placeholder='10' autoComplete='off' autoCorrect='off' />
                 </div>
             </div>
             <button className='Header__startButton' onClick={startAlgorithm}> START </button>
             <div className='Header__options'>
-                    <div>
                         <input onChange={e => handleChange(e)} defaultValue='25'  type='range'  min='25' max='35' className='Header__slider' />
-                    </div>        
+                        <h1 onClick={clearBoard} className='Header__clearBoard'> CLEAR </h1>
             </div>
         </div>
 )}

@@ -9,18 +9,19 @@ interface IPathfindingVisualizer {
     mousePressed: boolean;
     start: boolean;
     end: boolean;
-    weight: boolean;
     setMousePressed: (value: boolean) => void;
     setStart: (value: boolean) => void;
     setEnd: (value: boolean) => void;
-    setWeight: (value: boolean) => void;
-
 }
 
-export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ setWeight, weight, end, setEnd, start, setStart, mousePressed, setMousePressed }) => {
+export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, setEnd, start, setStart, mousePressed, setMousePressed }) => {
     
     const [grid, setGrid] = useState<INode[][]>([])
     const [algorithm, setAlgorithm] = useState('Dijkstra')
+    const [weight, setWeight] = useState({
+        active: false,
+        value: 10
+    })
     const [dimensions, setDimensions] = useState({
         rows: 25,
         columns: 50
@@ -52,9 +53,12 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ setWei
         }
         return grid
     }
+
+    const clearBoard = () => {
+        const newGrid = getInitialGrid()
+        setGrid(newGrid)
+    }
     
-
-
     const createNode = (col: number, row: number): INode => {
         return {
             col,
@@ -63,7 +67,10 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ setWei
             isEnd: row === endNode.current.row && col === endNode.current.col,
             distance: Infinity,
             isVisited: false,
-            isWeight: false,
+            isWeight: {
+                active: false,
+                value: 10
+            },
             isWall: false,
             previousNode: null,
           };
@@ -82,7 +89,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ setWei
             if (i === visitedNodesInOrder.length) {
                 setTimeout(() => {
                     animateShortestPath(shortestPath)
-                }, 10 * i)
+                }, 2 * i)
                 return 
             }
 
@@ -91,7 +98,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ setWei
                 const { row, col } = visitedNodesInOrder[i]
                 const currentNode = document.getElementById(`node-${row}-${col}`)
                 if (currentNode) currentNode.classList.add('Node__visited') 
-            }, 10 * i)
+            }, 2 * i)
         }
     }
 
@@ -140,13 +147,13 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ setWei
         if (currentNode.isStart) setStart(true)
         if (currentNode.isEnd) setEnd(true)
         setMousePressed(true)
-        generateWall(row, col)
+        generateObject(row, col)
     }
 
     const handleMouseEnter = (row: number, col: number) => {
         if (start) return generateStart(row, col)
         if (end) return generateEnd(row, col)
-        if (mousePressed) return generateWall(row, col)
+        if (mousePressed) return generateObject(row, col)
     } 
 
     const generateStart = (row: number, col: number) => {
@@ -170,23 +177,29 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ setWei
         endNode.current.col = col
         setGrid(cacheGrid)
     }
-    
-    const generateWall = (row: number, col: number) => {        
+
+    const generateObject = (row: number, col: number) => {
         const cacheGrid = grid.slice()
         let currentNode = cacheGrid[row][col]
         if (currentNode.isStart || currentNode.isEnd) return
-        if (weight) {
-            currentNode.isWeight = !currentNode.isWeight
+        if (weight.active) {
+            if (currentNode.isWall) return
+            currentNode.isWeight = {
+                active: !currentNode.isWeight.active,
+                value: weight.value
+            }
             setGrid(cacheGrid)
         } else {
+            if (currentNode.isWeight.active) return
             currentNode.isWall = !currentNode.isWall
             setGrid(cacheGrid)
         }
-    }
+    } 
+
 
     return (
         <>
-            <Header setWeight={setWeight} weight={weight} setDimensions={setDimensions} currentAlgorithm={algorithm} setAlgorithm={setAlgorithm} startAlgorithm={visualizeAlgorithm} />
+            <Header clearBoard={clearBoard} setWeight={setWeight} weight={weight} setDimensions={setDimensions} currentAlgorithm={algorithm} setAlgorithm={setAlgorithm} startAlgorithm={visualizeAlgorithm} />
             <div className='Board' onMouseUp={() => setMousePressed(false)}>
                 {
                     grid.map((row, rowIndex) => {
@@ -208,13 +221,13 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ setWei
                                                     onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
                                                     onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
                                                     >
-                                                    </Node>
+                                                </Node>
                                     })
                                 }
                             </div>
                     })
                 }
             </div>
-            </>
+        </>
    
 )}

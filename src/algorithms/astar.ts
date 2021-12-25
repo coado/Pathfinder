@@ -39,8 +39,8 @@ const calculateHeuristicDistance = (node: INode, endNode: INode): number => Math
 const updateOpenList = (currentNode: INode, grid: INode[][]) => {
     const unvisitedNeighbors = getUnvisitedNeighbors(currentNode, grid)
     for (const neighbor of unvisitedNeighbors) {
-        if (neighbor.isWeight) {
-            neighbor.distance = currentNode.distance + 10 + 1
+        if (neighbor.isWeight.active) {
+            neighbor.distance = currentNode.distance + neighbor.isWeight.value + 1
         } else {
             neighbor.distance = currentNode.distance + 1
         }

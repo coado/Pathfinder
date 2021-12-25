@@ -28,16 +28,32 @@
     justify-content: center;
     font-size: 1rem;
     font-weight: 600;
-    background-color: #f27639;
     user-select: none;
     -ms-user-selec: none;
     -moz-user-select: none;
     -webkit-user-select: none;
     animation: wallAnimation 0.5s forwards;
+
+    &--lightBlue {
+      background: #12e2eb;
+    }
+    &--blue {
+      background: #1297eb;
+    }
+    &--orange {
+      background: #ebbf12;
+    }
+    &--pink {
+      background: #eb12a6;
+    }
+    &--red {
+      background: #eb123f;
+    }
   }
 
   &__visited {
     animation: visitedAnimation 1.5s ease-out forwards;
+    background-color: rgba(160, 18, 236, 0.75);
   }
 
   &__shortestPath {
@@ -65,7 +81,6 @@
 
   100% {
     transform: scale(1);
-    background-color: rgba(160, 18, 236, 0.75);
   }
 }
 
