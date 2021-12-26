@@ -62,9 +62,9 @@ export const Header: React.FC<IHeader> = ({ clearBoard, setWeight, weight, setDi
                         <p> &#8227; </p>
                     <div className='Header__dropdown--container'>
                         <div onClick={() => handleSettingAlgorithm('Dijsktra')} className='Header__dropdown--element'>Dijsktra</div>
-                        <div onClick={() => handleSettingAlgorithm('Astar')} className='Header__dropdown--element'>Astar</div>
-                        <div className='Header__dropdown--element'>Element</div>
-                        <div className='Header__dropdown--element'>Element</div>
+                        <div onClick={() => handleSettingAlgorithm('A*')} className='Header__dropdown--element'>A*</div>
+                        <div onClick={() => handleSettingAlgorithm('Greedy BFS')} className='Header__dropdown--element'>Greedy BFS</div>
+                        <div onClick={() => handleSettingAlgorithm('DFS')} className='Header__dropdown--element'>DFS</div>
                     </div>
                 </div>
 

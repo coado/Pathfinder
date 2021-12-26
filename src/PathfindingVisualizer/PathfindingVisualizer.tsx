@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Node, INode } from '../components/Node/Node';
 import { dijkstra } from '../algorithms/dijkstra';
 import { astar } from '../algorithms/astar'; 
+import { greedyBFS } from '../algorithms/greedyBFS';
+import { dfs } from '../algorithms/dfs';
 import { Header } from '../components/Header/Header';
 import './PathfindingVisualizer.styles.scss';
 
@@ -16,8 +18,8 @@ interface IPathfindingVisualizer {
 
 export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, setEnd, start, setStart, mousePressed, setMousePressed }) => {
     
-    const [grid, setGrid] = useState<INode[][]>([])
     const [algorithm, setAlgorithm] = useState('Dijkstra')
+    const [grid, setGrid] = useState<INode[][]>([])
     const [weight, setWeight] = useState({
         active: false,
         value: 10
@@ -28,12 +30,12 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
     })
 
     const startNode = useRef({
-        row: 10,
-        col: 10
+        row: 0,
+        col: 2
     })
     const endNode = useRef({
-        row: 15,
-        col: 45
+        row: 0,
+        col: 5
     })
 
     /////// GENERATING BOARD CODE ---------------------------------------------------------------
@@ -54,7 +56,28 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
         return grid
     }
 
+    const clearPaths = () => {
+        let newGrid = grid.slice();
+        for (let row = 0; row < dimensions.rows; row++) {
+            for (let col = 0; col < dimensions.columns; col++) {
+                const DOMNode = document.getElementById(`node-${row}-${col}`)
+                const reactNode = newGrid[row][col]
+                if (DOMNode) {
+                    DOMNode.classList.remove('Node__visited') 
+                    DOMNode.classList.remove('Node__shortestPath')
+                } 
+                reactNode.isVisited = false
+                reactNode.distance = Infinity
+                reactNode.previousNode = null
+            }
+        }
+        setGrid(newGrid)
+    }
+
     const clearBoard = () => {
+        console.log(dimensions);
+        
+        clearPaths()
         const newGrid = getInitialGrid()
         setGrid(newGrid)
     }
@@ -89,7 +112,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
             if (i === visitedNodesInOrder.length) {
                 setTimeout(() => {
                     animateShortestPath(shortestPath)
-                }, 2 * i)
+                }, 10 * i)
                 return 
             }
 
@@ -98,7 +121,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
                 const { row, col } = visitedNodesInOrder[i]
                 const currentNode = document.getElementById(`node-${row}-${col}`)
                 if (currentNode) currentNode.classList.add('Node__visited') 
-            }, 2 * i)
+            }, 10 * i)
         }
     }
 
@@ -115,24 +138,32 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
     }
     
     const visualizeAlgorithm = () => {
-        
+        clearPaths()
         let visitedNodes: INode[] | undefined;
         const startNodeData = grid[startNode.current.row][startNode.current.col]
         const endNodeData = grid[endNode.current.row][endNode.current.col] 
+        
         switch (algorithm) {
-            case 'Astar':
+            case 'A*':
                 visitedNodes = astar(grid, startNodeData, endNodeData)
+                break
+            case 'Greedy BFS':
+                visitedNodes = greedyBFS(grid, startNodeData, endNodeData)
+                break
+            case 'DFS':
+                visitedNodes = dfs(grid, startNodeData, endNodeData)
                 break
             default:
                 visitedNodes = dijkstra(grid, startNodeData, endNodeData)
         }
         
-        if (!visitedNodes) return 
+        if (!visitedNodes) return    
         const nodesInShortestPath = getShortestPath(visitedNodes[visitedNodes.length-1]) 
         animateAlgorithm(visitedNodes, nodesInShortestPath)  
     }
 
     const getShortestPath = (lastNode: INode) => {
+        if (!lastNode.isEnd) return []
         const shortestPath = []
         while (lastNode.previousNode) {
             shortestPath.unshift(lastNode)
@@ -206,7 +237,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
                         return <div className='Board__row' key={rowIndex} >
                                 {
                                     row.map((node, colIndex) => {
-                                        const {isStart, isEnd, isWall, isWeight} = node;
+                                        const {isStart, isEnd, isWall, isWeight, isVisited} = node;
                                         return <Node 
                                                     row={rowIndex} 
                                                     col={colIndex} 
@@ -215,6 +246,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
                                                     isWall={isWall}
                                                     isWeight={isWeight}
                                                     key={colIndex}
+                                                    isVisited={isVisited}
                                                     // 1250 is the lowest amount of all nodes
                                                     // decreasing size of node linearly
                                                     dimension={1 + 1250 / (dimensions.rows*dimensions.columns)}

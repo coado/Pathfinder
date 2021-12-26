@@ -33,6 +33,7 @@ export const Node: React.FC<PropsNode> = React.memo((
         col, 
         isWeight,
         dimension, 
+        isVisited,
         isStart, 
         isEnd, 
         isWall, 

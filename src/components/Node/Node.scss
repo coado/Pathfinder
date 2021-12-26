@@ -1,18 +1,6 @@
 .Node {
   border: 0.2px solid rgba(255, 255, 255, 0.1);
 
-  &__start {
-    background-color: #24c25f !important;
-    box-shadow: 0px 0px 20px 5px #24c25f !important;
-    animation: edgeNodesAnimation 0.5s ease-out forwards;
-  }
-
-  &__end {
-    background-color: #e14518 !important;
-    box-shadow: 0px 0px 20px 5px #e14518 !important;
-    animation: edgeNodesAnimation 0.5s ease-out forwards;
-  }
-
   &__wall {
     background-color: #9ea5a8 !important;
     box-shadow: 0px 0px 4px 0px #783ef5;
@@ -58,8 +46,20 @@
 
   &__shortestPath {
     animation: shortestPathAnimation 0.8s ease-out forwards;
-    background-color: rgba(237, 255, 93, 0.8);
+    background-color: rgba(237, 255, 93, 0.8) !important;
     color: blueviolet;
+  }
+
+  &__start {
+    background-color: #24c25f !important;
+    box-shadow: 0px 0px 20px 5px #24c25f !important;
+    animation: edgeNodesAnimation 0.5s ease-out forwards;
+  }
+
+  &__end {
+    background-color: #e14518 !important;
+    box-shadow: 0px 0px 20px 5px #e14518 !important;
+    animation: edgeNodesAnimation 0.5s ease-out forwards;
   }
 }
 

@@ -1,7 +1,8 @@
 import { INode } from '../components/Node/Node';
 
 export const dijkstra = (grid: INode[][], startNode: INode, endNode: INode) => {
-       const visitedNodesInOrder: INode[] = []
+    
+       const visitedNodes: INode[] = []       
        startNode.distance = 0 
        const unvisitedNodes = getAllNodes(grid)
        
@@ -9,14 +10,14 @@ export const dijkstra = (grid: INode[][], startNode: INode, endNode: INode) => {
        while(!!unvisitedNodes.length) {
             sortNodesByDistance(unvisitedNodes)
             const closestNode = unvisitedNodes.shift();
-            if (!closestNode) return visitedNodesInOrder
+            if (!closestNode) return visitedNodes
             // If we encounter a wall, we skip it.            
             if (closestNode.isWall && !closestNode.isStart && !closestNode.isEnd) continue;
             // We are stopping if closestNode.distance == Infinity
-            if (closestNode.distance === Infinity) return visitedNodesInOrder
+            if (closestNode.distance === Infinity) return visitedNodes
             closestNode.isVisited = true
-            visitedNodesInOrder.push(closestNode)
-            if (closestNode === endNode) return visitedNodesInOrder
+            visitedNodes.push(closestNode)
+            if (closestNode === endNode) return visitedNodes
             updateUnvisitedNeighbors(closestNode, grid)
         }
         
