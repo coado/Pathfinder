@@ -1,7 +1,31 @@
+.Container {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 15% 70% 15%;
+  padding-top: 8%;
+}
+
 .Board {
-  margin-top: 10rem;
-  margin-bottom: 11rem;
+  //margin-top: 10rem;
+  //margin-bottom: 11rem;
+  // display: flex;
+  // flex-direction: column;
+  // align-items: center;
   &__row {
     display: flex;
+  }
+}
+
+.ComputationTime {
+  color: white;
+  text-align: center;
+
+  &__header {
+    font-size: 2.6rem;
+    text-shadow: -1px -3px 6px #783ef5;
+  }
+
+  &__value {
+    font-size: 2.2rem;
   }
 }

@@ -26,8 +26,6 @@ export const dfs = (grid: INode[][], startNode: INode, endNode: INode) => {
             }
         }
         return visitedNodes
-        
-        
        
 }
 
@@ -43,6 +41,6 @@ const getUnvisitedNeighbors = (currentNode: INode, grid: INode[][]): INode[] => 
     if (col < grid[0].length - 1) neighbors.push(grid[row][col + 1])
     // top
     if (row > 0 ) neighbors.push(grid[row - 1][col])
-    return neighbors.filter((neighbor: INode) => !neighbor.isVisited && !neighbor.isWall)
+    return neighbors.filter((neighbor: INode) => (!neighbor.isVisited && !neighbor.isWall) || neighbor.isEnd)
 } 
 

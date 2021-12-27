@@ -8,7 +8,6 @@ import { INode } from '../components/Node/Node';
     while(unvisitedNodes.length !== 0) {
         sortNodes(unvisitedNodes)
         const closestNode = unvisitedNodes.shift()
-        console.log(closestNode);
         
         if (!closestNode) return closedList
         if (closestNode.isWall && !closestNode.isStart && !closestNode.isEnd) continue
@@ -18,7 +17,7 @@ import { INode } from '../components/Node/Node';
         if (closestNode === endNode) return closedList
         updateOpenList(closestNode, endNode, grid)
     }
-
+    return closedList
 } 
 
 const sortNodes = (openList: INode[]) => {

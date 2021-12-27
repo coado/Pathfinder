@@ -3,6 +3,7 @@ import { INode } from '../components/Node/Node';
  export const astar = (grid: INode[][], startNode: INode, endNode: INode) => {
     let closedList = []
     startNode.distance = 0
+    startNode.hdistance = calculateHeuristicDistance(startNode, endNode)
     const unvisitedNodes = getAllNodes(grid)
     // H - absolute distance between n-node and finishNode
     // G - shortest distance to get to current node
@@ -10,7 +11,7 @@ import { INode } from '../components/Node/Node';
 
     
     while(unvisitedNodes.length !== 0) {
-        sortNodes(unvisitedNodes, endNode)
+        sortNodes(unvisitedNodes)
         const closestNode = unvisitedNodes.shift()
         
         if (!closestNode) return closedList
@@ -19,16 +20,17 @@ import { INode } from '../components/Node/Node';
         closestNode.isVisited = true
         closedList.push(closestNode)
         if (closestNode === endNode) return closedList
-        updateOpenList(closestNode, grid)
+        updateUnvisitedNeighbors(closestNode, grid, endNode)
     }
+    return closedList
 
 } 
 
-const sortNodes = (openList: INode[], endNode: INode) => {
-    openList.sort((nodeA, nodeB) => {
+const sortNodes = (unvisitedNodes: INode[]) => {
+    unvisitedNodes.sort((nodeA, nodeB) => {
         // f - sum of heuristick (approximation of distance to endNode) and distance from startNode    
-        const f_B = nodeB.distance + calculateHeuristicDistance(nodeB, endNode)
-        const f_A = nodeA.distance + calculateHeuristicDistance(nodeA, endNode)
+        const f_B = nodeB.distance + nodeB.hdistance
+        const f_A = nodeA.distance + nodeA.hdistance
         
         return f_A - f_B
     })
@@ -36,14 +38,13 @@ const sortNodes = (openList: INode[], endNode: INode) => {
 
 const calculateHeuristicDistance = (node: INode, endNode: INode): number => Math.abs(node.col - endNode.col) + Math.abs(node.row - endNode.row)
 
-const updateOpenList = (currentNode: INode, grid: INode[][]) => {
+const updateUnvisitedNeighbors = (currentNode: INode, grid: INode[][], endNode: INode) => {
     const unvisitedNeighbors = getUnvisitedNeighbors(currentNode, grid)
     for (const neighbor of unvisitedNeighbors) {
-        if (neighbor.isWeight.active) {
-            neighbor.distance = currentNode.distance + neighbor.isWeight.value + 1
-        } else {
-            neighbor.distance = currentNode.distance + 1
-        }
+        const heuristickDistance = calculateHeuristicDistance(neighbor, endNode)
+        if (neighbor.isWeight.active) neighbor.distance = currentNode.distance + neighbor.isWeight.value + 1
+        else neighbor.distance = currentNode.distance + 1
+        neighbor.hdistance = heuristickDistance
         neighbor.previousNode = currentNode
     }
     

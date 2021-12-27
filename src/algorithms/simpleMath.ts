@@ -1,6 +1,6 @@
 import { INode } from '../components/Node/Node';
 
-export const dijkstra = (grid: INode[][], startNode: INode, endNode: INode) => {
+export const simpleMath = (grid: INode[][], startNode: INode, endNode: INode) => {
     
        const visitedNodes: INode[] = []       
        startNode.distance = 0 
@@ -18,24 +18,25 @@ export const dijkstra = (grid: INode[][], startNode: INode, endNode: INode) => {
             closestNode.isVisited = true
             visitedNodes.push(closestNode)
             if (closestNode === endNode) return visitedNodes
-            updateUnvisitedNeighbors(closestNode, grid)
+            updateUnvisitedNeighbors(closestNode, grid, endNode)
         }
-        
-        return visitedNodes
-       
+    return visitedNodes
 }
 
 const sortNodesByDistance = (unvisitedNodes: INode[]) => {
     unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
   }
 
-const updateUnvisitedNeighbors = (currentNode: INode, grid: INode[][]) => {
+  //const calculateHeuristicDistance = (node: INode, endNode: INode): number => Math.abs(node.col - endNode.col) + Math.abs(node.row - endNode.row)
+
+const updateUnvisitedNeighbors = (currentNode: INode, grid: INode[][], endNode: INode) => {
     const unvisitedNeigbors = getUnvisitedNeighbors(currentNode, grid)
     for (const neighbor of unvisitedNeigbors) {
+        const averageDistance = Math.sqrt((endNode.col - neighbor.col)**2 + (endNode.row - currentNode.row)**2)
         if (neighbor.isWeight.active) {
-            neighbor.distance = currentNode.distance + neighbor.isWeight.value + 1
+            neighbor.distance = averageDistance + neighbor.isWeight.value
         } else {
-            neighbor.distance = currentNode.distance + 1
+            neighbor.distance = averageDistance
         }
         neighbor.previousNode = currentNode
     }

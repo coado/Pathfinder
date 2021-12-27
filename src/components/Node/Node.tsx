@@ -7,6 +7,7 @@ export interface INode {
     isStart: boolean,
     isEnd: boolean,
     distance: number,
+    hdistance: number,
     isVisited: boolean,
     isWall: boolean,
     isWeight: {
@@ -33,7 +34,6 @@ export const Node: React.FC<PropsNode> = React.memo((
         col, 
         isWeight,
         dimension, 
-        isVisited,
         isStart, 
         isEnd, 
         isWall, 

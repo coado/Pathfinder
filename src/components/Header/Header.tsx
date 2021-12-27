@@ -18,10 +18,12 @@ interface IHeader {
             rows: number;
             columns: number;
         }) => void;
-        clearBoard: () => void 
+        clearBoard: () => void;
+        clearPaths: () => void; 
+        generateMaze: () => void;
     }
 
-export const Header: React.FC<IHeader> = ({ clearBoard, setWeight, weight, setDimensions, startAlgorithm, setAlgorithm, currentAlgorithm }) => {
+export const Header: React.FC<IHeader> = ({ clearBoard, clearPaths, generateMaze, setWeight, weight, setDimensions, startAlgorithm, setAlgorithm, currentAlgorithm }) => {
     
     const handleSettingAlgorithm = (algorithm: string) => {
         setAlgorithm(algorithm)
@@ -65,6 +67,7 @@ export const Header: React.FC<IHeader> = ({ clearBoard, setWeight, weight, setDi
                         <div onClick={() => handleSettingAlgorithm('A*')} className='Header__dropdown--element'>A*</div>
                         <div onClick={() => handleSettingAlgorithm('Greedy BFS')} className='Header__dropdown--element'>Greedy BFS</div>
                         <div onClick={() => handleSettingAlgorithm('DFS')} className='Header__dropdown--element'>DFS</div>
+                        <div onClick={() => handleSettingAlgorithm('Simple Math')} className='Header__dropdown--element'>Simple Math</div>
                     </div>
                 </div>
 
@@ -72,11 +75,14 @@ export const Header: React.FC<IHeader> = ({ clearBoard, setWeight, weight, setDi
                     <Weight onClick={handleWeightClick} className={`Header__weight--icon ${weight.active ? 'Header__weight--icon--active' : null}`} />
                     <input className='Header__weight--input' onKeyPress={e => filterInputText(e)} onChange={e => onChangeHandle(e)} maxLength={2} placeholder='10' autoComplete='off' autoCorrect='off' />
                 </div>
+
+                <h1 onClick={generateMaze} className='Header__text'> GENERATE MAZE </h1>
             </div>
             <button className='Header__startButton' onClick={startAlgorithm}> START </button>
             <div className='Header__options'>
                         <input onChange={e => handleChange(e)} defaultValue='25'  type='range'  min='25' max='35' className='Header__slider' />
-                        <h1 onClick={clearBoard} className='Header__clearBoard'> CLEAR </h1>
+                        <h1 onClick={clearBoard} className='Header__text'> CLEAR BOARD </h1>
+                        <h1 onClick={clearPaths} className='Header__text'> CLEAR PATHS </h1>
             </div>
         </div>
 )}

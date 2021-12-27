@@ -4,6 +4,7 @@ import { dijkstra } from '../algorithms/dijkstra';
 import { astar } from '../algorithms/astar'; 
 import { greedyBFS } from '../algorithms/greedyBFS';
 import { dfs } from '../algorithms/dfs';
+import { simpleMath } from '../algorithms/simpleMath';
 import { Header } from '../components/Header/Header';
 import './PathfindingVisualizer.styles.scss';
 
@@ -20,6 +21,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
     
     const [algorithm, setAlgorithm] = useState('Dijkstra')
     const [grid, setGrid] = useState<INode[][]>([])
+    const [measuredTime, setMeasuredTime] = useState<number | null>(null)
     const [weight, setWeight] = useState({
         active: false,
         value: 10
@@ -56,6 +58,17 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
         return grid
     }
 
+    const generateMaze = () => {
+        const cacheGrid = getInitialGrid()
+        for (let i = 0; i < dimensions.rows; ++i) {
+            for (let j = 0; j < dimensions.columns; ++j) {
+                if(Math.floor(Math.random() + 1/4)) cacheGrid[i][j].isWall = true
+            }
+        }
+        setGrid(cacheGrid)
+    }
+
+    //////// CLEARING FUNCTIONS -----------------------------------------------------------------    
     const clearPaths = () => {
         let newGrid = grid.slice();
         for (let row = 0; row < dimensions.rows; row++) {
@@ -75,13 +88,14 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
     }
 
     const clearBoard = () => {
-        console.log(dimensions);
-        
         clearPaths()
         const newGrid = getInitialGrid()
         setGrid(newGrid)
+        
     }
     
+    ///////////////////////////////////////////////////////////////////////////////////
+
     const createNode = (col: number, row: number): INode => {
         return {
             col,
@@ -89,6 +103,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
             isStart: row === startNode.current.row && col === startNode.current.col,
             isEnd: row === endNode.current.row && col === endNode.current.col,
             distance: Infinity,
+            hdistance: Infinity,
             isVisited: false,
             isWeight: {
                 active: false,
@@ -99,7 +114,6 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
           };
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -136,25 +150,40 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
             }, 25 * i)
         }            
     }
+
+    const callAlgorithm = (
+        fn: (grid: INode[][] ,startNodeData: INode, endNodeData: INode) => INode[],
+        startNodeData: INode,
+        endNodeData: INode
+    ) => {
+        const start = performance.now()
+        const visitedNodes = fn(grid, startNodeData, endNodeData)
+        const end = performance.now()
+        setMeasuredTime(end-start)
+        return visitedNodes
+    }
     
     const visualizeAlgorithm = () => {
         clearPaths()
-        let visitedNodes: INode[] | undefined;
+        let visitedNodes: INode[];
         const startNodeData = grid[startNode.current.row][startNode.current.col]
         const endNodeData = grid[endNode.current.row][endNode.current.col] 
         
         switch (algorithm) {
             case 'A*':
-                visitedNodes = astar(grid, startNodeData, endNodeData)
+                visitedNodes = callAlgorithm(astar, startNodeData, endNodeData)
                 break
             case 'Greedy BFS':
-                visitedNodes = greedyBFS(grid, startNodeData, endNodeData)
+                visitedNodes = callAlgorithm(greedyBFS, startNodeData, endNodeData)
                 break
             case 'DFS':
-                visitedNodes = dfs(grid, startNodeData, endNodeData)
+                visitedNodes = callAlgorithm(dfs, startNodeData, endNodeData)
+                break
+            case 'Simple Math':
+                visitedNodes = callAlgorithm(simpleMath, startNodeData, endNodeData)
                 break
             default:
-                visitedNodes = dijkstra(grid, startNodeData, endNodeData)
+                visitedNodes = callAlgorithm(dijkstra, startNodeData, endNodeData)
         }
         
         if (!visitedNodes) return    
@@ -174,7 +203,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
     ///////////////////////////////////////////////////////////////////////////////////
 
     const handleMouseDown = (row: number, col: number) => {
-        let currentNode = grid[row][col]
+        let currentNode = grid[row][col]    
         if (currentNode.isStart) setStart(true)
         if (currentNode.isEnd) setEnd(true)
         setMousePressed(true)
@@ -230,35 +259,55 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
 
     return (
         <>
-            <Header clearBoard={clearBoard} setWeight={setWeight} weight={weight} setDimensions={setDimensions} currentAlgorithm={algorithm} setAlgorithm={setAlgorithm} startAlgorithm={visualizeAlgorithm} />
-            <div className='Board' onMouseUp={() => setMousePressed(false)}>
-                {
-                    grid.map((row, rowIndex) => {
-                        return <div className='Board__row' key={rowIndex} >
-                                {
-                                    row.map((node, colIndex) => {
-                                        const {isStart, isEnd, isWall, isWeight, isVisited} = node;
-                                        return <Node 
-                                                    row={rowIndex} 
-                                                    col={colIndex} 
-                                                    isStart={isStart} 
-                                                    isEnd={isEnd}  
-                                                    isWall={isWall}
-                                                    isWeight={isWeight}
-                                                    key={colIndex}
-                                                    isVisited={isVisited}
-                                                    // 1250 is the lowest amount of all nodes
-                                                    // decreasing size of node linearly
-                                                    dimension={1 + 1250 / (dimensions.rows*dimensions.columns)}
-                                                    onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
-                                                    onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
-                                                    >
-                                                </Node>
-                                    })
-                                }
-                            </div>
-                    })
-                }
+            <Header 
+                clearBoard={clearBoard}
+                clearPaths={clearPaths}
+                setWeight={setWeight} 
+                weight={weight} 
+                setDimensions={setDimensions} 
+                currentAlgorithm={algorithm} 
+                setAlgorithm={setAlgorithm} 
+                startAlgorithm={visualizeAlgorithm} 
+                generateMaze={generateMaze}
+            />
+            <div className='Container'>
+                <div>
+
+                </div>
+                <div className='Board' onMouseUp={() => setMousePressed(false)}>
+                    {
+                        grid.map((row, rowIndex) => {
+                            return <div className='Board__row' key={rowIndex} >
+                                    {
+                                        row.map((node, colIndex) => {
+                                            const {isStart, isEnd, isWall, isWeight, isVisited} = node;
+                                            return <Node 
+                                                        row={rowIndex} 
+                                                        col={colIndex} 
+                                                        isStart={isStart} 
+                                                        isEnd={isEnd}  
+                                                        isWall={isWall}
+                                                        isWeight={isWeight}
+                                                        key={colIndex}
+                                                        isVisited={isVisited}
+                                                        // 1250 is the lowest amount of all nodes
+                                                        // decreasing size of node linearly
+                                                        dimension={1 + 1250 / (dimensions.rows*dimensions.columns)}
+                                                        onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
+                                                        onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
+                                                        >
+                                                    </Node>
+                                        })
+                                    }
+                                </div>
+                        })
+                    }
+                </div>
+
+                <div className='ComputationTime'>
+                    <h1 className='ComputationTime__header'>Computation <br /> Time:</h1>
+                    <span className='ComputationTime__value'>{measuredTime !== null ? measuredTime === 0 ? '< 1' : measuredTime : null} ms</span>
+                </div>
             </div>
         </>
    
