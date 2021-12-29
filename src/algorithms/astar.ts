@@ -1,4 +1,5 @@
 import { INode } from '../components/Node/Node';
+import { getUnvisitedNeighbors, getAllNodes, calculateHeuristicDistance, sortNodesByDistanceAndhDistance } from './utils';
 
  export const astar = (grid: INode[][], startNode: INode, endNode: INode) => {
     let closedList = []
@@ -11,7 +12,7 @@ import { INode } from '../components/Node/Node';
 
     
     while(unvisitedNodes.length !== 0) {
-        sortNodes(unvisitedNodes)
+        sortNodesByDistanceAndhDistance(unvisitedNodes)
         const closestNode = unvisitedNodes.shift()
         
         if (!closestNode) return closedList
@@ -26,17 +27,6 @@ import { INode } from '../components/Node/Node';
 
 } 
 
-const sortNodes = (unvisitedNodes: INode[]) => {
-    unvisitedNodes.sort((nodeA, nodeB) => {
-        // f - sum of heuristick (approximation of distance to endNode) and distance from startNode    
-        const f_B = nodeB.distance + nodeB.hdistance
-        const f_A = nodeA.distance + nodeA.hdistance
-        
-        return f_A - f_B
-    })
-}
-
-const calculateHeuristicDistance = (node: INode, endNode: INode): number => Math.abs(node.col - endNode.col) + Math.abs(node.row - endNode.row)
 
 const updateUnvisitedNeighbors = (currentNode: INode, grid: INode[][], endNode: INode) => {
     const unvisitedNeighbors = getUnvisitedNeighbors(currentNode, grid)
@@ -50,27 +40,3 @@ const updateUnvisitedNeighbors = (currentNode: INode, grid: INode[][], endNode: 
     
 }
 
-const getUnvisitedNeighbors = (currentNode: INode, grid: INode[][]): INode[] => {
-    const neighbors = []
-    const { col, row } = currentNode
-    // top
-    if (row > 0 ) neighbors.push(grid[row - 1][col])
-    // down
-    if (row < grid.length - 1) neighbors.push(grid[row + 1][col])
-    // left
-    if (col > 0) neighbors.push(grid[row][col-1])
-    // rigth
-    if (col < grid[0].length - 1) neighbors.push(grid[row][col + 1])
-    return neighbors.filter((neighbor: INode) => !neighbor.isVisited)
-}
-
-
-const getAllNodes = (grid: INode[][]): INode[] => {
-    const nodes = []
-    for (const row of grid) {
-        for (const node of row) {
-            nodes.push(node)
-        }
-    }
-    return nodes
-}

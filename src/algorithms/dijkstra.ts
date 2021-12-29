@@ -1,4 +1,5 @@
 import { INode } from '../components/Node/Node';
+import { getUnvisitedNeighbors, getAllNodes, sortNodesByDistance } from './utils';
 
 export const dijkstra = (grid: INode[][], startNode: INode, endNode: INode) => {
     
@@ -25,10 +26,6 @@ export const dijkstra = (grid: INode[][], startNode: INode, endNode: INode) => {
        
 }
 
-const sortNodesByDistance = (unvisitedNodes: INode[]) => {
-    unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
-  }
-
 const updateUnvisitedNeighbors = (currentNode: INode, grid: INode[][]) => {
     const unvisitedNeigbors = getUnvisitedNeighbors(currentNode, grid)
     for (const neighbor of unvisitedNeigbors) {
@@ -39,30 +36,4 @@ const updateUnvisitedNeighbors = (currentNode: INode, grid: INode[][]) => {
         }
         neighbor.previousNode = currentNode
     }
-}
-
-
-const getUnvisitedNeighbors = (currentNode: INode, grid: INode[][]): INode[] => {
-        const neighbors = []
-        const { col, row } = currentNode
-        // top
-        if (row > 0 ) neighbors.push(grid[row - 1][col])
-        // down
-        if (row < grid.length - 1) neighbors.push(grid[row + 1][col])
-        // left
-        if (col > 0) neighbors.push(grid[row][col-1])
-        // rigth
-        if (col < grid[0].length - 1) neighbors.push(grid[row][col + 1])
-        return neighbors.filter((neighbor: INode) => !neighbor.isVisited)
-} 
-
-
-const getAllNodes = (grid: INode[][]): INode[] => {
-    const nodes = []
-    for (const row of grid) {
-        for (const node of row) {
-            nodes.push(node)
-        }
-    }
-    return nodes
 }

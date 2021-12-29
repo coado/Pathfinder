@@ -20,10 +20,27 @@ interface IHeader {
         }) => void;
         clearBoard: () => void;
         clearPaths: () => void; 
-        generateMaze: () => void;
+        generateTarget: () => void;
+        generateRandomMaze: () => void;
+        generateRandomMazeWithRandomWeights: () => void;
+        generateMaze1: () => void;
     }
 
-export const Header: React.FC<IHeader> = ({ clearBoard, clearPaths, generateMaze, setWeight, weight, setDimensions, startAlgorithm, setAlgorithm, currentAlgorithm }) => {
+export const Header: React.FC<IHeader> = (
+    { 
+        clearBoard, 
+        clearPaths, 
+        generateRandomMaze, 
+        generateRandomMazeWithRandomWeights,
+        generateMaze1,
+        generateTarget,
+        setWeight, 
+        weight, 
+        setDimensions, 
+        startAlgorithm, 
+        setAlgorithm, 
+        currentAlgorithm 
+    }) => {
     
     const handleSettingAlgorithm = (algorithm: string) => {
         setAlgorithm(algorithm)
@@ -63,24 +80,36 @@ export const Header: React.FC<IHeader> = ({ clearBoard, clearPaths, generateMaze
                         <h1>{ currentAlgorithm }</h1>
                         <p> &#8227; </p>
                     <div className='Header__dropdown--container'>
-                        <div onClick={() => handleSettingAlgorithm('Dijsktra')} className='Header__dropdown--element'>Dijsktra</div>
-                        <div onClick={() => handleSettingAlgorithm('A*')} className='Header__dropdown--element'>A*</div>
-                        <div onClick={() => handleSettingAlgorithm('Greedy BFS')} className='Header__dropdown--element'>Greedy BFS</div>
-                        <div onClick={() => handleSettingAlgorithm('DFS')} className='Header__dropdown--element'>DFS</div>
-                        <div onClick={() => handleSettingAlgorithm('Simple Math')} className='Header__dropdown--element'>Simple Math</div>
+                        <div onClick={() => handleSettingAlgorithm('Dijsktra')} className='Header__dropdown--element'><span>Dijsktra</span></div>
+                        <div onClick={() => handleSettingAlgorithm('A*')} className='Header__dropdown--element'><span>A*</span></div>
+                        <div onClick={() => handleSettingAlgorithm('Greedy BFS')} className='Header__dropdown--element'><span>Greedy BFS</span></div>
+                        <div onClick={() => handleSettingAlgorithm('DFS')} className='Header__dropdown--element'><span>DFS</span></div>
+                        <div onClick={() => handleSettingAlgorithm('Simple Math')} className='Header__dropdown--element'><span>Simple Math</span></div>
                     </div>
                 </div>
 
-                <div className='Header__weight'>
-                    <Weight onClick={handleWeightClick} className={`Header__weight--icon ${weight.active ? 'Header__weight--icon--active' : null}`} />
-                    <input className='Header__weight--input' onKeyPress={e => filterInputText(e)} onChange={e => onChangeHandle(e)} maxLength={2} placeholder='10' autoComplete='off' autoCorrect='off' />
+                <div className='Header__icon'>
+                    <Weight onClick={handleWeightClick} className={`Header__icon--default ${weight.active ? 'Header__icon--default--active' : null}`} />
+                    <input className='Header__icon--input' onKeyPress={e => filterInputText(e)} onChange={e => onChangeHandle(e)} maxLength={2} placeholder='10' autoComplete='off' autoCorrect='off' />
                 </div>
 
-                <h1 onClick={generateMaze} className='Header__text'> GENERATE MAZE </h1>
+
+                <div className='Header__dropdown'>
+                    <h1> Generate Maze </h1>
+                    <p> &#8227; </p>
+                    <div className='Header__dropdown--container'>
+                        <div onClick={generateRandomMaze} className='Header__dropdown--element'><span>Random Maze</span></div>
+                        <div onClick={generateRandomMazeWithRandomWeights} className='Header__dropdown--element'><span>Random Maze With Random Weights</span></div>
+                        <div onClick={generateMaze1} className='Header__dropdown--element'><span>MAZE 1</span></div>
+                        <div className='Header__dropdown--element'><span>MAZE 2</span></div>
+                        <div className='Header__dropdown--element'><span>MAZE 3</span></div>
+                    </div>
+                </div>
             </div>
             <button className='Header__startButton' onClick={startAlgorithm}> START </button>
             <div className='Header__options'>
                         <input onChange={e => handleChange(e)} defaultValue='25'  type='range'  min='25' max='35' className='Header__slider' />
+                        <h1 onClick={generateTarget} className='Header__text'> TARGET </h1>
                         <h1 onClick={clearBoard} className='Header__text'> CLEAR BOARD </h1>
                         <h1 onClick={clearPaths} className='Header__text'> CLEAR PATHS </h1>
             </div>

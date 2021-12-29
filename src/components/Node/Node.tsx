@@ -1,5 +1,6 @@
 import React from 'react';
-import './Node.scss'
+import {ReactComponent as Target} from '../../svg/target.svg';
+import './Node.scss';
 
 export interface INode {
     col: number,
@@ -9,6 +10,7 @@ export interface INode {
     distance: number,
     hdistance: number,
     isVisited: boolean,
+    isTarget: boolean,
     isWall: boolean,
     isWeight: {
         active: boolean,
@@ -37,6 +39,7 @@ export const Node: React.FC<PropsNode> = React.memo((
         isStart, 
         isEnd, 
         isWall, 
+        isTarget,
         onMouseDown, 
         onMouseEnter, 
         onMouseUp 
@@ -71,7 +74,7 @@ export const Node: React.FC<PropsNode> = React.memo((
                 }}
             >
             {
-                isWeight && isWeight.active && isWeight.value
+                isTarget ? <Target /> : isWeight?.active ? isWeight.value : null
             }
             
         </div>

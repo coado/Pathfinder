@@ -6,18 +6,23 @@ import { greedyBFS } from '../algorithms/greedyBFS';
 import { dfs } from '../algorithms/dfs';
 import { simpleMath } from '../algorithms/simpleMath';
 import { Header } from '../components/Header/Header';
+import * as maze1 from './maze1.json';
 import './PathfindingVisualizer.styles.scss';
+
+type draggingFunction = (value: boolean) => void
 
 interface IPathfindingVisualizer {
     mousePressed: boolean;
-    start: boolean;
-    end: boolean;
-    setMousePressed: (value: boolean) => void;
-    setStart: (value: boolean) => void;
-    setEnd: (value: boolean) => void;
+    dragStart: boolean;
+    dragEnd: boolean;
+    dragTarget: boolean;
+    setDragStart: draggingFunction;
+    setDragEnd: draggingFunction;
+    setDragTarget: draggingFunction;
+    setMousePressed: draggingFunction;
 }
 
-export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, setEnd, start, setStart, mousePressed, setMousePressed }) => {
+export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTarget, setDragTarget, dragEnd, setDragEnd, dragStart, setDragStart, mousePressed, setMousePressed }) => {
     
     const [algorithm, setAlgorithm] = useState('Dijkstra')
     const [grid, setGrid] = useState<INode[][]>([])
@@ -31,6 +36,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
         columns: 50
     })
 
+    const target = useRef(false)
     const startNode = useRef({
         row: 0,
         col: 2
@@ -47,22 +53,65 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
     }, [dimensions])
 
     const getInitialGrid = (): INode[][] => {
-        const grid: INode[][] = []
+        if (startNode.current.row > dimensions.rows - 1) startNode.current.row = dimensions.rows - 1
+        if (startNode.current.col > dimensions.columns - 1) startNode.current.col = dimensions.columns - 1
+        if (endNode.current.row > dimensions.rows - 1) endNode.current.row = dimensions.rows - 1
+        if (endNode.current.col > dimensions.columns - 1) endNode.current.col = dimensions.columns - 1
+        return getNewGrid()
+    }
+
+    const getNewGrid = (): INode[][] => {
+        const newGrid: INode[][] = []
+
         for (let row = 0; row < dimensions.rows; row++) {
             const currentRow: INode[] = []
                 for (let col = 0; col < dimensions.columns; col++) {
                     currentRow.push(createNode(col, row))
                 }
-            grid.push(currentRow)
+            newGrid.push(currentRow)
         }
-        return grid
+        return newGrid
     }
 
-    const generateMaze = () => {
-        const cacheGrid = getInitialGrid()
-        for (let i = 0; i < dimensions.rows; ++i) {
-            for (let j = 0; j < dimensions.columns; ++j) {
-                if(Math.floor(Math.random() + 1/4)) cacheGrid[i][j].isWall = true
+    const generateRandomMaze = () => {
+        const cacheGrid = getNewGrid()
+        for (let row = 0; row < dimensions.rows; ++row) {
+            for (let col = 0; col < dimensions.columns; ++col) {
+                if (Math.floor(Math.random() + 1/4)) cacheGrid[row][col].isWall = true
+            }
+        }
+        setGrid(cacheGrid)
+    }
+
+    const generateRandomMazeWithRandomWeights = () => {
+        const cacheGrid = getNewGrid()
+        for (let row = 0; row < dimensions.rows; ++row) {
+            for (let col = 0; col < dimensions.columns; ++col) {
+                const randomNumber = Math.random()
+                if (Math.floor(randomNumber + 1/5)) cacheGrid[row][col].isWall = true
+                else {
+                    if (Math.floor(randomNumber + 2/5)) {
+                        const newRandomNumber = Math.ceil(Math.random()*100)
+                        cacheGrid[row][col].isWeight = {
+                            active: true,
+                            value: newRandomNumber
+                        }
+                    }
+                }
+            }
+        }
+        setGrid(cacheGrid)
+    }
+
+    const generateMaze1 = () => {
+        const cacheGrid = getNewGrid()
+        for (let row = 0; row < dimensions.rows; ++row) {
+            for (let col = 0; col < dimensions.columns; ++col) {
+                let current = `${row}-${col}`
+                // @ts-expect-error
+                if (maze1[current]?.isWall === true) { 
+                    cacheGrid[row][col].isWall = true
+                }                       
             }
         }
         setGrid(cacheGrid)
@@ -89,9 +138,8 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
 
     const clearBoard = () => {
         clearPaths()
-        const newGrid = getInitialGrid()
+        const newGrid = getNewGrid()
         setGrid(newGrid)
-        
     }
     
     ///////////////////////////////////////////////////////////////////////////////////
@@ -105,6 +153,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
             distance: Infinity,
             hdistance: Infinity,
             isVisited: false,
+            isTarget: false,
             isWeight: {
                 active: false,
                 value: 10
@@ -204,15 +253,16 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
 
     const handleMouseDown = (row: number, col: number) => {
         let currentNode = grid[row][col]    
-        if (currentNode.isStart) setStart(true)
-        if (currentNode.isEnd) setEnd(true)
+        if (currentNode.isStart) setDragStart(true)
+        if (currentNode.isEnd) setDragEnd(true)
+        if (currentNode.isTarget) setDragTarget(true)
         setMousePressed(true)
         generateObject(row, col)
     }
 
     const handleMouseEnter = (row: number, col: number) => {
-        if (start) return generateStart(row, col)
-        if (end) return generateEnd(row, col)
+        if (dragStart) return generateStart(row, col)
+        if (dragEnd) return generateEnd(row, col)
         if (mousePressed) return generateObject(row, col)
     } 
 
@@ -238,6 +288,14 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
         setGrid(cacheGrid)
     }
 
+    const generateNewTarget = (row: number, col: number) => {
+        const cacheGrid = grid.slice()
+        const currentNode = cacheGrid[row][col]
+        if (currentNode.isStart || currentNode.isEnd) return
+
+        // In Progress....
+    }
+
     const generateObject = (row: number, col: number) => {
         const cacheGrid = grid.slice()
         let currentNode = cacheGrid[row][col]
@@ -248,13 +306,27 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
                 active: !currentNode.isWeight.active,
                 value: weight.value
             }
-            setGrid(cacheGrid)
-        } else {
+        } 
+        else {
             if (currentNode.isWeight.active) return
             currentNode.isWall = !currentNode.isWall
-            setGrid(cacheGrid)
         }
+        setGrid(cacheGrid)
     } 
+
+    const generateTarget = () => {
+        const cacheGrid = grid.slice()
+        if (target.current) {
+            for (const row of cacheGrid) {
+                for (const node of row) {
+                    if (node.isTarget) node.isTarget = false
+                }
+            }
+        }
+        else cacheGrid[0][0].isTarget = true
+        setGrid(cacheGrid)
+        target.current = !target.current
+    }
 
 
     return (
@@ -268,7 +340,10 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
                 currentAlgorithm={algorithm} 
                 setAlgorithm={setAlgorithm} 
                 startAlgorithm={visualizeAlgorithm} 
-                generateMaze={generateMaze}
+                generateTarget={generateTarget}
+                generateRandomMaze={generateRandomMaze}
+                generateRandomMazeWithRandomWeights={generateRandomMazeWithRandomWeights}
+                generateMaze1={generateMaze1}
             />
             <div className='Container'>
                 <div>
@@ -280,7 +355,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
                             return <div className='Board__row' key={rowIndex} >
                                     {
                                         row.map((node, colIndex) => {
-                                            const {isStart, isEnd, isWall, isWeight, isVisited} = node;
+                                            const { isStart, isEnd, isWall, isWeight, isVisited, isTarget } = node;
                                             return <Node 
                                                         row={rowIndex} 
                                                         col={colIndex} 
@@ -288,6 +363,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
                                                         isEnd={isEnd}  
                                                         isWall={isWall}
                                                         isWeight={isWeight}
+                                                        isTarget={isTarget}
                                                         key={colIndex}
                                                         isVisited={isVisited}
                                                         // 1250 is the lowest amount of all nodes
@@ -306,7 +382,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ end, s
 
                 <div className='ComputationTime'>
                     <h1 className='ComputationTime__header'>Computation <br /> Time:</h1>
-                    <span className='ComputationTime__value'>{measuredTime !== null ? measuredTime === 0 ? '< 1' : measuredTime : null} ms</span>
+                    <span className='ComputationTime__value'>{measuredTime !== null ? measuredTime === 0 ? '< 1 ms' : `${measuredTime}ms` : null}</span>
                 </div>
             </div>
         </>
