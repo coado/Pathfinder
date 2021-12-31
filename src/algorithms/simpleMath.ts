@@ -1,7 +1,7 @@
 import { INode } from '../components/Node/Node';
 import { getUnvisitedNeighbors, getAllNodes, sortNodesByDistanceAndhDistance, calculateHeuristickDistancePitagoras } from './utils';
 
-export const simpleMath = (grid: INode[][], startNode: INode, endNode: INode) => {
+export const simpleMath = (grid: INode[][], startNode: INode, endNode: INode, target: boolean) => {
     
        const visitedNodes: INode[] = []       
        startNode.distance = 0 

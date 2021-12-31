@@ -36,7 +36,12 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTa
         columns: 50
     })
 
-    const target = useRef(false)
+    const target = useRef({
+        active: false,
+        row: 0,
+        col: 0
+    })
+
     const startNode = useRef({
         row: 0,
         col: 2
@@ -201,12 +206,12 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTa
     }
 
     const callAlgorithm = (
-        fn: (grid: INode[][] ,startNodeData: INode, endNodeData: INode) => INode[],
+        fn: (grid: INode[][] ,startNodeData: INode, endNodeData: INode, target: boolean) => INode[],
         startNodeData: INode,
-        endNodeData: INode
+        endNodeData: INode,
     ) => {
         const start = performance.now()
-        const visitedNodes = fn(grid, startNodeData, endNodeData)
+        const visitedNodes = fn(grid, startNodeData, endNodeData, target.current.active)
         const end = performance.now()
         setMeasuredTime(end-start)
         return visitedNodes
@@ -253,9 +258,9 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTa
 
     const handleMouseDown = (row: number, col: number) => {
         let currentNode = grid[row][col]    
-        if (currentNode.isStart) setDragStart(true)
-        if (currentNode.isEnd) setDragEnd(true)
-        if (currentNode.isTarget) setDragTarget(true)
+        if (currentNode.isStart) return setDragStart(true)
+        if (currentNode.isEnd) return setDragEnd(true)
+        if (currentNode.isTarget) return setDragTarget(true)
         setMousePressed(true)
         generateObject(row, col)
     }
@@ -263,6 +268,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTa
     const handleMouseEnter = (row: number, col: number) => {
         if (dragStart) return generateStart(row, col)
         if (dragEnd) return generateEnd(row, col)
+        if (dragTarget) return generateNewTarget(row, col)
         if (mousePressed) return generateObject(row, col)
     } 
 
@@ -292,8 +298,11 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTa
         const cacheGrid = grid.slice()
         const currentNode = cacheGrid[row][col]
         if (currentNode.isStart || currentNode.isEnd) return
-
-        // In Progress....
+        cacheGrid[target.current.row][target.current.col].isTarget = false
+        currentNode.isTarget = true
+        target.current.row = row
+        target.current.col = col
+        setGrid(cacheGrid)
     }
 
     const generateObject = (row: number, col: number) => {
@@ -316,16 +325,17 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTa
 
     const generateTarget = () => {
         const cacheGrid = grid.slice()
-        if (target.current) {
-            for (const row of cacheGrid) {
-                for (const node of row) {
+        const { active, row, col } = target.current
+        
+        if ( active ) {
+            for (const row of cacheGrid) 
+                for (const node of row) 
                     if (node.isTarget) node.isTarget = false
-                }
-            }
+            
         }
-        else cacheGrid[0][0].isTarget = true
+        else cacheGrid[row][col].isTarget = true
         setGrid(cacheGrid)
-        target.current = !target.current
+        target.current.active = !target.current.active
     }
 
 

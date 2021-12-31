@@ -18,6 +18,9 @@ export const getAllNodes = (grid: INode[][]): INode[] => {
     const nodes = []
     for (const row of grid) {
         for (const node of row) {
+            node.isVisited = false
+            node.distance = Infinity
+            node.previousNode = null
             nodes.push(node)
         }
     }

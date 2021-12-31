@@ -56,6 +56,7 @@ export const Node: React.FC<PropsNode> = React.memo((
         const getClass = () => {
             if (isStart) return 'Node__start'
             if (isEnd) return 'Node__end'
+            if (isTarget) return 'Node__target'
             if (isWeight?.active) return `Node__weight Node__weight--${weightColor(isWeight.value)}`
             if (isWall) return 'Node__wall'
             return ''

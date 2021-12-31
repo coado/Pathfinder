@@ -1,7 +1,7 @@
 import { INode } from '../components/Node/Node';
 import { getUnvisitedNeighbors } from './utils'
 
-export const dfs = (grid: INode[][], startNode: INode, endNode: INode) => {
+export const dfs = (grid: INode[][], startNode: INode, endNode: INode, target: boolean) => {
        const visitedNodes: INode[] = []       
        const nodesStack: INode[] = []
        startNode.isVisited = true

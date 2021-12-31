@@ -1,7 +1,7 @@
 import { INode } from '../components/Node/Node';
 import { getUnvisitedNeighbors, getAllNodes, calculateHeuristicDistance, sortNodesByDistanceAndhDistance } from './utils';
 
- export const astar = (grid: INode[][], startNode: INode, endNode: INode) => {
+ export const astar = (grid: INode[][], startNode: INode, endNode: INode, target: boolean) => {
     let closedList = []
     startNode.distance = 0
     startNode.hdistance = calculateHeuristicDistance(startNode, endNode)

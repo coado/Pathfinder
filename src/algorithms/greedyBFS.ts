@@ -6,7 +6,7 @@ import {
         sortNodesByDistance 
 } from './utils';
 
- export const greedyBFS = (grid: INode[][], startNode: INode, endNode: INode) => {
+ export const greedyBFS = (grid: INode[][], startNode: INode, endNode: INode, target: boolean) => {
     let closedList = []
     startNode.distance = calculateHeuristicDistance(startNode, endNode)
     const unvisitedNodes = getAllNodes(grid)

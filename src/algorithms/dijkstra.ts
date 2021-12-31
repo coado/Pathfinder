@@ -1,14 +1,14 @@
 import { INode } from '../components/Node/Node';
 import { getUnvisitedNeighbors, getAllNodes, sortNodesByDistance } from './utils';
 
-export const dijkstra = (grid: INode[][], startNode: INode, endNode: INode) => {
-    
+export const dijkstra = (grid: INode[][], startNode: INode, endNode: INode, target: boolean) => {
+        console.log(target);
+        
        const visitedNodes: INode[] = []       
+       let unvisitedNodes = getAllNodes(grid)
        startNode.distance = 0 
-       const unvisitedNodes = getAllNodes(grid)
        
-       // while(true)
-       while(!!unvisitedNodes.length) {
+       while(unvisitedNodes.length !== 0) {
             sortNodesByDistance(unvisitedNodes)
             const closestNode = unvisitedNodes.shift();
             if (!closestNode) return visitedNodes
@@ -18,7 +18,14 @@ export const dijkstra = (grid: INode[][], startNode: INode, endNode: INode) => {
             if (closestNode.distance === Infinity) return visitedNodes
             closestNode.isVisited = true
             visitedNodes.push(closestNode)
-            if (closestNode === endNode) return visitedNodes
+            if (target && closestNode.isTarget) {
+                unvisitedNodes = getAllNodes(grid)
+                console.log(visitedNodes);
+                target = false
+                closestNode.distance = 0
+            
+            }
+            if (closestNode.isEnd && !target) return visitedNodes
             updateUnvisitedNeighbors(closestNode, grid)
         }
         

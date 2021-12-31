@@ -61,6 +61,11 @@
     box-shadow: 0px 0px 20px 5px #e14518 !important;
     animation: edgeNodesAnimation 0.5s ease-out forwards;
   }
+
+  &__target {
+    fill: white;
+    animation: targetAnimation 0.5s forwards;
+  }
 }
 
 @keyframes visitedAnimation {
@@ -81,6 +86,21 @@
 
   100% {
     transform: scale(1);
+  }
+}
+
+@keyframes targetAnimation {
+  0% {
+    transform: scale(0.3) rotate(360deg);
+    //border-radius: 100%;
+  }
+
+  75% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1.05);
   }
 }
 
