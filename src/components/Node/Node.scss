@@ -44,15 +44,26 @@
     background-color: rgba(160, 18, 236, 0.75);
   }
 
+  &__visitedTarget {
+    animation: targetVisitedAnimation 1.5s ease-out forwards;
+    background-color: rgba(18, 236, 229, 0.75);
+  }
+
   &__shortestPath {
     animation: shortestPathAnimation 0.8s ease-out forwards;
     background-color: rgba(237, 255, 93, 0.8) !important;
     color: blueviolet;
   }
 
+  &__shortestTargetPath {
+    animation: shortestPathAnimation 0.8s ease-out forwards;
+    background-color: rgba(255, 198, 93, 0.8) !important;
+    color: blueviolet;
+  }
+
   &__start {
-    background-color: #24c25f !important;
-    box-shadow: 0px 0px 20px 5px #24c25f !important;
+    background-color: #05f860 !important;
+    box-shadow: 0px 0px 20px 5px #05f860 !important;
     animation: edgeNodesAnimation 0.5s ease-out forwards;
   }
 
@@ -82,6 +93,27 @@
   75% {
     transform: scale(1.2);
     background-color: rgba(235, 18, 118, 0.75);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes targetVisitedAnimation {
+  0% {
+    transform: scale(0.3);
+    background-color: rgba(2, 115, 111, 0.75);
+    border-radius: 100%;
+  }
+
+  50% {
+    background-color: white;
+  }
+
+  75% {
+    transform: scale(1.2);
+    background-color: rgba(78, 236, 142, 0.75);
   }
 
   100% {

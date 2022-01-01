@@ -75,7 +75,7 @@ export const Node: React.FC<PropsNode> = React.memo((
                 }}
             >
             {
-                isTarget ? <Target /> : isWeight?.active ? isWeight.value : null
+                isTarget ? <Target /> : (isWeight?.active && !isStart && !isEnd) ? isWeight.value : null
             }
             
         </div>

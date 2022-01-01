@@ -6,6 +6,8 @@ interface IHeader {
         startAlgorithm: () => void;
         setAlgorithm: (algorithm: string) => void;
         currentAlgorithm: string;
+        minDim: number;
+        maxDim: number;
         weight: {
             active: boolean;
             value: number;
@@ -18,7 +20,7 @@ interface IHeader {
             rows: number;
             columns: number;
         }) => void;
-        clearBoard: () => void;
+        clearBoard: () => void | null;
         clearPaths: () => void; 
         generateTarget: () => void;
         generateRandomMaze: () => void;
@@ -39,7 +41,9 @@ export const Header: React.FC<IHeader> = (
         setDimensions, 
         startAlgorithm, 
         setAlgorithm, 
-        currentAlgorithm 
+        currentAlgorithm,
+        minDim,
+        maxDim 
     }) => {
     
     const handleSettingAlgorithm = (algorithm: string) => {
@@ -108,7 +112,7 @@ export const Header: React.FC<IHeader> = (
             </div>
             <button className='Header__startButton' onClick={startAlgorithm}> START </button>
             <div className='Header__options'>
-                        <input onChange={e => handleChange(e)} defaultValue='25'  type='range'  min='25' max='35' className='Header__slider' />
+                        <input onChange={e => handleChange(e)} defaultValue={minDim}  type='range'  min={minDim} max={maxDim} className='Header__slider' />
                         <h1 onClick={generateTarget} className='Header__text'> TARGET </h1>
                         <h1 onClick={clearBoard} className='Header__text'> CLEAR BOARD </h1>
                         <h1 onClick={clearPaths} className='Header__text'> CLEAR PATHS </h1>

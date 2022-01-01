@@ -22,18 +22,36 @@ interface IPathfindingVisualizer {
     setMousePressed: draggingFunction;
 }
 
-export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTarget, setDragTarget, dragEnd, setDragEnd, dragStart, setDragStart, mousePressed, setMousePressed }) => {
+export interface IPaths {
+    visitedNodes: INode[];
+    targetShortestPath: INode[];
+}
+
+export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = (
+    { dragTarget, 
+      setDragTarget, 
+      dragEnd, 
+      setDragEnd, 
+      dragStart, 
+      setDragStart, 
+      mousePressed, 
+      setMousePressed 
+    }) => {
+
+    const minDim = 25;
+    const maxDim = 35
     
     const [algorithm, setAlgorithm] = useState('Dijkstra')
     const [grid, setGrid] = useState<INode[][]>([])
     const [measuredTime, setMeasuredTime] = useState<number | null>(null)
+    const [blockFunction, setBlockFunction] = useState(false)
     const [weight, setWeight] = useState({
         active: false,
         value: 10
     })
     const [dimensions, setDimensions] = useState({
-        rows: 25,
-        columns: 50
+        rows: minDim,
+        columns: minDim*2
     })
 
     const target = useRef({
@@ -62,6 +80,8 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTa
         if (startNode.current.col > dimensions.columns - 1) startNode.current.col = dimensions.columns - 1
         if (endNode.current.row > dimensions.rows - 1) endNode.current.row = dimensions.rows - 1
         if (endNode.current.col > dimensions.columns - 1) endNode.current.col = dimensions.columns - 1
+        if (target.current.row > dimensions.rows - 1) target.current.row = dimensions.rows - 1
+        if (target.current.col > dimensions.columns - 1) target.current.col = dimensions.columns - 1
         return getNewGrid()
     }
 
@@ -122,6 +142,8 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTa
         setGrid(cacheGrid)
     }
 
+    const blockCallingFunction =  <T extends Function>(fn: T) => blockFunction ? null : fn
+
     //////// CLEARING FUNCTIONS -----------------------------------------------------------------    
     const clearPaths = () => {
         let newGrid = grid.slice();
@@ -129,10 +151,9 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTa
             for (let col = 0; col < dimensions.columns; col++) {
                 const DOMNode = document.getElementById(`node-${row}-${col}`)
                 const reactNode = newGrid[row][col]
-                if (DOMNode) {
-                    DOMNode.classList.remove('Node__visited') 
-                    DOMNode.classList.remove('Node__shortestPath')
-                } 
+                if (DOMNode) 
+                    DOMNode.classList.remove('Node__visited', 'Node__shortestPath', 'Node__visitedTarget', 'Node__shortestTargetPath') 
+
                 reactNode.isVisited = false
                 reactNode.distance = Infinity
                 reactNode.previousNode = null
@@ -141,11 +162,11 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTa
         setGrid(newGrid)
     }
 
-    const clearBoard = () => {
+    const clearBoard = blockCallingFunction(() => {
         clearPaths()
         const newGrid = getNewGrid()
         setGrid(newGrid)
-    }
+    })
     
     ///////////////////////////////////////////////////////////////////////////////////
 
@@ -158,7 +179,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTa
             distance: Infinity,
             hdistance: Infinity,
             isVisited: false,
-            isTarget: false,
+            isTarget: target.current.active && row === target.current.row && col === target.current.col,
             isWeight: {
                 active: false,
                 value: 10
@@ -174,6 +195,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTa
     //////////////////// ANIMATING ---------------------------------------------------------------------  
 
     const animateAlgorithm = (visitedNodesInOrder: INode[], shortestPath: INode[]) => {
+        let target = false
         for (let i = 0; i <= visitedNodesInOrder.length; i++) {
             // It has to be done this way, becaue setTimeout is async function
             // or idk why
@@ -183,35 +205,47 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTa
                 }, 10 * i)
                 return 
             }
-
+            
+            // eslint-disable-next-line no-loop-func
             setTimeout(() => {
-                // It's not a good practice especially in React, but we need tremendous rerendering speed
+                // It's not a good practice in React, but we need tremendous rerendering speed
+                if (visitedNodesInOrder[i].isTarget) target = true
                 const { row, col } = visitedNodesInOrder[i]
                 const currentNode = document.getElementById(`node-${row}-${col}`)
-                if (currentNode) currentNode.classList.add('Node__visited') 
+                if (currentNode){
+                    if (!target) currentNode.classList.add('Node__visited') 
+                    else currentNode.classList.add('Node__visitedTarget')
+                }
             }, 10 * i)
         }
     }
 
     const animateShortestPath = (shortestPath: INode[]) => {
-
+        let target = false
+        
         for (let i = 0; i < shortestPath.length; i++) {
+            // eslint-disable-next-line no-loop-func
             setTimeout(() => {
                 const { row, col } = shortestPath[i]
                 const currentNode = document.getElementById(`node-${row}-${col}`)
-                if (currentNode) currentNode.classList.add('Node__shortestPath')
+                if (shortestPath[i].isTarget) target = true
+                if (currentNode) {
+                    if(!target) currentNode.classList.add('Node__shortestPath')
+                    else currentNode.classList.add('Node__shortestTargetPath')
+                }
             // not working without * i
             }, 25 * i)
         }            
     }
 
     const callAlgorithm = (
-        fn: (grid: INode[][] ,startNodeData: INode, endNodeData: INode, target: boolean) => INode[],
+        fn: (grid: INode[][] ,startNodeData: INode, endNodeData: INode, target: boolean, targetNode: INode) => IPaths,
         startNodeData: INode,
         endNodeData: INode,
     ) => {
+        const targetNode = grid[target.current.row][target.current.col]
         const start = performance.now()
-        const visitedNodes = fn(grid, startNodeData, endNodeData, target.current.active)
+        const visitedNodes = fn(grid, startNodeData, endNodeData, target.current.active, targetNode)
         const end = performance.now()
         setMeasuredTime(end-start)
         return visitedNodes
@@ -219,40 +253,44 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTa
     
     const visualizeAlgorithm = () => {
         clearPaths()
-        let visitedNodes: INode[];
+        let paths: IPaths;
+       // let visitedNodes: INode[], targetShortestPath: INode[]
         const startNodeData = grid[startNode.current.row][startNode.current.col]
         const endNodeData = grid[endNode.current.row][endNode.current.col] 
         
-        switch (algorithm) {
+         switch (algorithm) {
             case 'A*':
-                visitedNodes = callAlgorithm(astar, startNodeData, endNodeData)
+                paths = callAlgorithm(astar, startNodeData, endNodeData)
                 break
             case 'Greedy BFS':
-                visitedNodes = callAlgorithm(greedyBFS, startNodeData, endNodeData)
+                paths = callAlgorithm(greedyBFS, startNodeData, endNodeData)
                 break
             case 'DFS':
-                visitedNodes = callAlgorithm(dfs, startNodeData, endNodeData)
+                paths = callAlgorithm(dfs, startNodeData, endNodeData)
                 break
             case 'Simple Math':
-                visitedNodes = callAlgorithm(simpleMath, startNodeData, endNodeData)
+                paths = callAlgorithm(simpleMath, startNodeData, endNodeData)
                 break
             default:
-                visitedNodes = callAlgorithm(dijkstra, startNodeData, endNodeData)
+                paths = callAlgorithm(dijkstra, startNodeData, endNodeData)
         }
-        
+        const { visitedNodes, targetShortestPath } = paths
+
         if (!visitedNodes) return    
-        const nodesInShortestPath = getShortestPath(visitedNodes[visitedNodes.length-1]) 
+        const nodesInShortestPath = getShortestPath(visitedNodes[visitedNodes.length-1], targetShortestPath) 
         animateAlgorithm(visitedNodes, nodesInShortestPath)  
     }
 
-    const getShortestPath = (lastNode: INode) => {
+    const getShortestPath = (lastNode: INode, targetShortestPath: INode[]) => {
         if (!lastNode.isEnd) return []
-        const shortestPath = []
+        const shortestPath: INode[] = []
+  
         while (lastNode.previousNode) {
             shortestPath.unshift(lastNode)
             lastNode = lastNode.previousNode
         }
-        return shortestPath
+
+        return targetShortestPath.concat(shortestPath)
     }
     ///////////////////////////////////////////////////////////////////////////////////
 
@@ -275,7 +313,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTa
     const generateStart = (row: number, col: number) => {
         const cacheGrid = grid.slice()
         let currentNode = cacheGrid[row][col]
-        if (currentNode.isEnd) return
+        if (currentNode.isEnd || currentNode.isTarget) return
         cacheGrid[startNode.current.row][startNode.current.col].isStart = false
         currentNode.isStart = true
         startNode.current.row = row
@@ -286,7 +324,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTa
     const generateEnd = (row: number, col: number) => {
         const cacheGrid = grid.slice()
         let currentNode = cacheGrid[row][col]
-        if (currentNode.isStart) return
+        if (currentNode.isStart || currentNode.isTarget) return
         cacheGrid[endNode.current.row][endNode.current.col].isEnd = false
         currentNode.isEnd = true
         endNode.current.row = row
@@ -328,9 +366,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTa
         const { active, row, col } = target.current
         
         if ( active ) {
-            for (const row of cacheGrid) 
-                for (const node of row) 
-                    if (node.isTarget) node.isTarget = false
+             cacheGrid[row][col].isTarget = false
             
         }
         else cacheGrid[row][col].isTarget = true
@@ -354,6 +390,8 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTa
                 generateRandomMaze={generateRandomMaze}
                 generateRandomMazeWithRandomWeights={generateRandomMazeWithRandomWeights}
                 generateMaze1={generateMaze1}
+                minDim={minDim}
+                maxDim={maxDim}
             />
             <div className='Container'>
                 <div>
@@ -392,7 +430,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = ({ dragTa
 
                 <div className='ComputationTime'>
                     <h1 className='ComputationTime__header'>Computation <br /> Time:</h1>
-                    <span className='ComputationTime__value'>{measuredTime !== null ? measuredTime === 0 ? '< 1 ms' : `${measuredTime}ms` : null}</span>
+                    <span className='ComputationTime__value'>{measuredTime !== null ? measuredTime === 0 ? '< 1 ms' : `${Math.round(measuredTime)}ms` : null}</span>
                 </div>
             </div>
         </>
