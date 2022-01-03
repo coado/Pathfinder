@@ -20,7 +20,7 @@ interface IHeader {
             rows: number;
             columns: number;
         }) => void;
-        clearBoard: () => void | null;
+        clearBoard: () => void;
         clearPaths: () => void; 
         generateTarget: () => void;
         generateRandomMaze: () => void;
@@ -94,7 +94,7 @@ export const Header: React.FC<IHeader> = (
 
                 <div className='Header__icon'>
                     <Weight onClick={handleWeightClick} className={`Header__icon--default ${weight.active ? 'Header__icon--default--active' : null}`} />
-                    <input className='Header__icon--input' onKeyPress={e => filterInputText(e)} onChange={e => onChangeHandle(e)} maxLength={2} placeholder='10' autoComplete='off' autoCorrect='off' />
+                    <input className='Header__icon--input'  onKeyPress={e => filterInputText(e)} onChange={e => onChangeHandle(e)} maxLength={2} placeholder='10' autoComplete='off' autoCorrect='off' />
                 </div>
 
 
