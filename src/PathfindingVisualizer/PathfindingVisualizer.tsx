@@ -22,6 +22,7 @@ interface IPathfindingVisualizer {
     setDragEnd: draggingFunction;
     setDragTarget: draggingFunction;
     setMousePressed: draggingFunction;
+    setTutorialWindow: () => void
 }
 
 export interface IPaths {
@@ -37,7 +38,8 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = (
       dragStart, 
       setDragStart, 
       mousePressed, 
-      setMousePressed 
+      setMousePressed,
+      setTutorialWindow 
     }) => {
 
     const minDim = 25;
@@ -415,6 +417,7 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = (
                 minDim={minDim}
                 maxDim={maxDim}
                 block={blockFunction}
+                setTutorialWindow={setTutorialWindow}
             />
             <div className='Container'>
                 <div className='Info'>
@@ -450,7 +453,6 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = (
                         })
                     }
                 </div>
-
                 <div className='ComputationTime'>
                     <h1 className='ComputationTime__header'>Computation <br /> Time:</h1>
                     <span className='ComputationTime__value'>{measuredTime !== null ? measuredTime === 0 ? '< 1 ms' : `${Math.round(measuredTime)}ms` : null}</span>

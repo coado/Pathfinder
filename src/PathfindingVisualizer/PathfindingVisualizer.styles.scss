@@ -2,7 +2,7 @@
   display: grid;
   width: 100%;
   grid-template-columns: 15% 70% 15%;
-  padding-top: 7%;
+  padding-top: 8%;
 }
 
 .Info {
@@ -14,7 +14,7 @@
 
   &__text {
     font-size: 1.8rem;
-    padding: 1.5rem;
+    padding: 1rem;
     line-height: 2.8rem;
     opacity: 0.6;
     font-style: italic;
@@ -22,9 +22,6 @@
 }
 
 .Board {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   &__row {
     display: flex;
   }

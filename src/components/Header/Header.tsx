@@ -28,10 +28,12 @@ interface IHeader {
         generateRandomMaze: () => void;
         generateRandomMazeWithRandomWeights: () => void;
         generateMaze: () => void;
+        setTutorialWindow: () => void
     }
 
 export const Header: React.FC<IHeader> = (
     { 
+        setTutorialWindow,
         clearBoard, 
         clearPaths, 
         generateRandomMaze, 
@@ -46,7 +48,7 @@ export const Header: React.FC<IHeader> = (
         currentAlgorithm,
         minDim,
         maxDim,
-        block 
+        block
     }) => {
     
     const handleSettingAlgorithm = (algorithm: algorithmTypes) => {
@@ -116,6 +118,7 @@ export const Header: React.FC<IHeader> = (
                         <h1 onClick={generateTarget} className='Header__text'> TARGET </h1>
                         <h1 onClick={clearBoard} className='Header__text'> CLEAR BOARD </h1>
                         <h1 onClick={clearPaths} className='Header__text'> CLEAR PATHS </h1>
+                        <h1 onClick={setTutorialWindow} className='Header__text'> HELP </h1>
             </div>
         </div>
 )}

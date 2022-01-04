@@ -37,7 +37,8 @@ function App() {
           dragTarget={dragTarget} 
           setDragTarget={setDragTarget}
           mousePressed={mousePressed} 
-          setMousePressed={setMousePressed} 
+          setMousePressed={setMousePressed}
+          setTutorialWindow={() => setTutorialWindow(true)} 
         />
       </div>
 
