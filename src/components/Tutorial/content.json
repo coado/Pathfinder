@@ -1,0 +1,32 @@
+{
+    "1": {
+        "header": "Pathfinder Tutorial",
+        "text": "Welcome to pathfinder. This tutorial will show you how to use this application in order to better understand pathfinding algorithms. Please feel free to skip this if you don't want to read. Enjoy!",
+        "contentType": "image"
+    },
+    "2": {
+        "header": "Algorithm",
+        "text": "Chose algorithm on top-left corner and click Start to run it. Purple fields means that program has visited that spaces and yellow fields marks path from start node to end node.",
+        "contentType": "image"
+    },
+    "3": {
+        "header": "Dragging",
+        "text": "Hold right mouse button on start, end or target element and drag to move node.",
+        "contentType": "video"
+    },
+    "4": {
+        "header": "Walls",
+        "text": "Create walls by click or drag on empty space using right mouse button. Delete walls by doing the same on nodes which are walls currently. Algorithm can't get through the walls.",
+        "contentType": "video"
+    },
+    "5": {
+        "header": "Weights",
+        "text": "Weights are created the same way as walls, but weight option must be active. For most of algorithms is harder to get through weighted space than empty. For example 10 weigth is equivalent to 10 empty spaces.",
+        "contentType": "video"
+    },
+    "6": {
+        "header": "Target",
+        "text": "Click on TARGET option to create target element. If target exist, than algorithm will try to find it first and after that, end node.",
+        "contentType": "video"
+    }
+}

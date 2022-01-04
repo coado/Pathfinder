@@ -1,0 +1,89 @@
+.TutorialWindow {
+  background-color: #222126;
+  width: 45rem;
+  height: 50rem;
+  border: 2px solid #783ef5;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  position: relative;
+
+  &__container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-backdrop-filter: blur(0.3rem);
+    backdrop-filter: blur(0.3rem);
+  }
+
+  &__close {
+    position: absolute;
+    top: 1rem;
+    right: 2rem;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+
+  &__text {
+    line-height: 3rem;
+    width: 90%;
+    margin-bottom: 3rem;
+  }
+  &__image {
+    object-fit: fill;
+    width: 40rem;
+    height: 22rem;
+    border-radius: 1rem;
+    box-shadow: 0px 1px 16px -3px #b720e6cc;
+  }
+
+  &__arrow {
+    width: 2rem;
+    position: absolute;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      opacity: 0.7;
+    }
+
+    &--right {
+      bottom: 2rem;
+      right: 2rem;
+    }
+
+    &--left {
+      bottom: 2rem;
+      left: 2rem;
+      transform: rotate(180deg);
+    }
+  }
+
+  &__checkbox {
+    position: absolute;
+    bottom: 3rem;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+  }
+
+  &__pageNumber {
+    opacity: 0.6;
+    position: absolute;
+    bottom: 1rem;
+  }
+}

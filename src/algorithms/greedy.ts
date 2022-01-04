@@ -8,7 +8,7 @@ import {
         getTargetShortestPath 
 } from './utils';
 
- export const greedyBFS = (grid: INode[][], startNode: INode, endNode: INode, target: boolean, targetNode: INode): IPaths => {
+ export const greedy = (grid: INode[][], startNode: INode, endNode: INode, target: boolean, targetNode: INode): IPaths => {
     const visitedNodes = []
     let targetShortestPath: INode[] = [];
     let unvisitedNodes = getAllNodes(grid)

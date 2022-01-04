@@ -1,6 +1,6 @@
 import React from 'react';
 import {ReactComponent as Target} from '../../svg/target.svg';
-import './Node.scss';
+import './Node.styles.scss';
 
 export interface INode {
     col: number,

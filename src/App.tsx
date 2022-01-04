@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PathfindingVisualizer } from './PathfindingVisualizer/PathfindingVisualizer'; 
+import { TutorialWindow } from './components/Tutorial/TutorialWindow'; 
 import './App.css';
 
 function App() {
@@ -7,6 +8,7 @@ function App() {
   const [dragStart, setDragStart] = useState(false)
   const [dragEnd, setDragEnd] = useState(false)
   const [dragTarget, setDragTarget] = useState(false)
+  const [tutorialWindow, setTutorialWindow] = useState(false)
 
   const handleMouseUp = () => {
     setMousePressed(false)
@@ -15,21 +17,34 @@ function App() {
     setDragTarget(false)
   }
 
+  useEffect(() => {
+    const data = window.localStorage.getItem('tutorial')
+    if (!data) return setTutorialWindow(true)
+    const preparedData: boolean = JSON.parse(data)
+    if (!preparedData) return
+    setTutorialWindow(true)
+  }, [])
+
 
   return (
-    <div className='App'  onMouseUp={handleMouseUp}>
-      <PathfindingVisualizer 
-        dragEnd={dragEnd}
-        setDragEnd={setDragEnd}
-        dragStart={dragStart}
-        setDragStart={setDragStart}
-        dragTarget={dragTarget} 
-        setDragTarget={setDragTarget}
-        mousePressed={mousePressed} 
-        setMousePressed={setMousePressed} 
-      />
-    </div>
+    <>
+      <div className='App'  onMouseUp={handleMouseUp}>
+        <PathfindingVisualizer 
+          dragEnd={dragEnd}
+          setDragEnd={setDragEnd}
+          dragStart={dragStart}
+          setDragStart={setDragStart}
+          dragTarget={dragTarget} 
+          setDragTarget={setDragTarget}
+          mousePressed={mousePressed} 
+          setMousePressed={setMousePressed} 
+        />
+      </div>
 
+      {
+        tutorialWindow && <TutorialWindow setTutorialWindow={() => setTutorialWindow(false)} />
+      }
+    </>
   );
 }
 
