@@ -1,8 +1,9 @@
 .Container {
-  display: grid;
+  display: flex;
   width: 100%;
-  grid-template-columns: 11.5% 77% 11.5%;
+  // grid-template-columns: 11.5% 77% 11.5%;
   padding-top: 8%;
+  justify-content: space-around;
 }
 
 .Info {
@@ -25,6 +26,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: auto;
+
   &__row {
     display: flex;
   }
@@ -33,6 +36,7 @@
 .ComputationTime {
   color: white;
   text-align: center;
+  margin: 0 2rem;
 
   &__header {
     font-size: 2.2rem;

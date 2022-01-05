@@ -1,32 +1,32 @@
 {
     "1": {
         "header": "Pathfinder Tutorial",
-        "text": "Welcome to pathfinder. This tutorial will show you how to use this application in order to better understand pathfinding algorithms. Please feel free to skip this if you don't want to read. Enjoy!",
+        "text": "Welcome to pathfinder. This tutorial will show you how to use this application in order to better understand pathfinding algorithms. Please feel free to skip ahead. Enjoy!",
         "contentType": "image"
     },
     "2": {
         "header": "Algorithm",
-        "text": "Chose algorithm on top-left corner and click Start to run it. Purple fields means that program has visited that spaces and yellow fields marks path from start node to end node.",
+        "text": "Chose algorithm on the top-left corner and click Start to run it. Purple field means that the program has already visited that space and yellow field means path from start node to end node.",
         "contentType": "image"
     },
     "3": {
         "header": "Dragging",
-        "text": "Hold left mouse button on start, end or target element and drag to move node.",
+        "text": "Hold left mouse button on start, end or target node and drag to move a node.",
         "contentType": "video"
     },
     "4": {
         "header": "Walls",
-        "text": "Create walls by click or drag on empty space using left mouse button. Delete walls by doing the same on nodes which are walls currently. Algorithm can't get through the walls.",
+        "text": "Create walls by clicking or draging on empty space using the left mouse button. Delete walls by doing alike on nodes that are currently walls. The algorithm cannot get through the walls.",
         "contentType": "video"
     },
     "5": {
         "header": "Weights",
-        "text": "Weights are created the same way as walls, but weight option must be active. For most of algorithms is harder to get through weighted space than empty. For example 10 weigth is equivalent to 10 empty spaces.",
+        "text": "Weights are created the same way as walls, but the weight option must be actived. Majority of algorithms find it harder to go through weighted space rather than empty. For instance, 10 weight is equivalent to 10 empty spaces.",
         "contentType": "video"
     },
     "6": {
         "header": "Target",
-        "text": "Click on TARGET option to create target element. If target exist, than algorithm will try to find it first and after that, end node.",
+        "text": "Click on the TARGET option to create the target element. If the target exist, then algorithm will try to find it first and after that, the end node.",
         "contentType": "video"
     }
 }
