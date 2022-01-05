@@ -1,7 +1,7 @@
 .Container {
   display: grid;
   width: 100%;
-  grid-template-columns: 15% 70% 15%;
+  grid-template-columns: 11.5% 77% 11.5%;
   padding-top: 8%;
 }
 
@@ -13,7 +13,7 @@
   text-align: center;
 
   &__text {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     padding: 1rem;
     line-height: 2.8rem;
     opacity: 0.6;
@@ -25,7 +25,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   &__row {
     display: flex;
   }
@@ -36,7 +35,7 @@
   text-align: center;
 
   &__header {
-    font-size: 2.6rem;
+    font-size: 2.2rem;
     text-shadow: -1px -3px 6px #783ef5;
   }
 

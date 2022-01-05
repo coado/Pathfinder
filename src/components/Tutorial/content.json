@@ -11,12 +11,12 @@
     },
     "3": {
         "header": "Dragging",
-        "text": "Hold right mouse button on start, end or target element and drag to move node.",
+        "text": "Hold left mouse button on start, end or target element and drag to move node.",
         "contentType": "video"
     },
     "4": {
         "header": "Walls",
-        "text": "Create walls by click or drag on empty space using right mouse button. Delete walls by doing the same on nodes which are walls currently. Algorithm can't get through the walls.",
+        "text": "Create walls by click or drag on empty space using left mouse button. Delete walls by doing the same on nodes which are walls currently. Algorithm can't get through the walls.",
         "contentType": "video"
     },
     "5": {
