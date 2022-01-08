@@ -6,7 +6,7 @@ import { greedy } from '../algorithms/greedy';
 import { dfs } from '../algorithms/dfs';
 import { simpleMath } from '../algorithms/simpleMath';
 import { Header } from '../components/Header/Header';
-import * as maze1 from './maze1.json';
+import maze1 from './maze1.json';
 import  algorithmsInfo from './algorithmsInfo.json'
 import './PathfindingVisualizer.styles.scss';
 

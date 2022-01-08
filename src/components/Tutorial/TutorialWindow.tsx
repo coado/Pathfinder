@@ -1,5 +1,5 @@
 import './TutorialWindow.styles.scss';
-import * as content from './content.json';
+import content from './content.json';
 import { useState, useRef } from 'react';
 
 
@@ -8,7 +8,7 @@ export const TutorialWindow = ({ setTutorialWindow }: { setTutorialWindow: () =>
     let itemRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
     const [currentPage, setCurrentPage] = useState(0)
-    const data: Record<string, string>[] = Object.values(content).slice(0,-1);
+    const data: Record<string, string>[] = Object.values(content);
 
     const handlePageChange = (value: number) => setCurrentPage(prevState => prevState + value)
 
