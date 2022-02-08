@@ -398,8 +398,6 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = (
         target.current.active = !target.current.active
     }
 
-    /// 313123
-
     return (
         <>
             <Header 
