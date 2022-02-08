@@ -440,9 +440,9 @@ export const PathfindingVisualizer: React.FC<IPathfindingVisualizer> = (
                                                         isTarget={isTarget}
                                                         key={colIndex}
                                                         isVisited={isVisited}
-                                                        // 1250 is the lowest amount of all nodes
+                                                        // the lowest amount of all nodes
                                                         // decreasing size of node linearly
-                                                        dimension={1 + 1250 / (dimensions.rows*dimensions.columns)}
+                                                        dimension={1 + minDim * minDim * 2 / (dimensions.rows*dimensions.columns)}
                                                         onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
                                                         onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
                                                         >
