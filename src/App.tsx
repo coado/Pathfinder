@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { PathfindingVisualizer } from './PathfindingVisualizer/PathfindingVisualizer'; 
 import { TutorialWindow } from './components/Tutorial/TutorialWindow'; 
+import { Footer } from './components/Footer/Footer';
 import './App.css';
 
 function App() {
@@ -45,6 +46,8 @@ function App() {
       {
         tutorialWindow && <TutorialWindow setTutorialWindow={() => setTutorialWindow(false)} />
       }
+
+      <Footer />
     </>
   );
 }

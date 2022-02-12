@@ -1,21 +1,24 @@
 .Container {
   display: flex;
-  padding-top: 16vh;
-  justify-content: stretch;
+  // padding-top: 16vh;
+  justify-content: space-evenly;
   padding-bottom: 1rem;
+  margin-top: 8vh;
+  width: 100%;
 }
 
 .Info {
   color: white;
   display: flex;
   text-align: center;
+  width: 20%;
+  flex-direction: column;
   //max-width: 20%;
-  padding: 1rem;
 
   &__text {
     font-size: 2vh;
     padding: 1rem;
-    line-height: 2.8rem;
+    line-height: 2vw;
     opacity: 0.6;
     font-style: italic;
   }
@@ -25,6 +28,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: auto;
+  padding: 1rem;
 
   &__row {
     display: flex;
@@ -37,8 +42,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  padding: 1rem;
+  width: 20%;
 
   &__header {
     font-size: 3.3vh;

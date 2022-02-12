@@ -70,8 +70,8 @@ export const Node: React.FC<PropsNode> = React.memo((
             onMouseEnter={onMouseEnter}
             onMouseUp={onMouseUp}
             style={
-                {   'width': `${dimension ? dimension*1.3 : null}vh`, 
-                    'height': `${dimension ? dimension*1.3 : null}vh`,
+                {   'width': `${dimension ? dimension*1.2 : null}vh`, 
+                    'height': `${dimension ? dimension*1.2 : null}vh`,
                 }}
             >
             {
