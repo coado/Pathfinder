@@ -9,7 +9,7 @@ Path-finding algorithms visualization.
 
 ![image](https://user-images.githubusercontent.com/64146291/175317979-a9001a3f-c78e-451e-a111-4b49d9ae5d26.png)
 
-## Algorithmes
+## Algorithms
 
 Dijkstra - one of the most popular algorithms. It guarantees the shortest path. In the beginning, every node has an infinity distance from the start node. The program checks all unvisited neighbors of the current node and updates their values. The next visited node is one with a shorter road from the beginning.
 
