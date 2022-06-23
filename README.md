@@ -1,3 +1,3 @@
-Visualization of path-finding alghorithms.
+## Check it out here: https://nifty-kepler-85cca2.netlify.app/
 
-https://nifty-kepler-85cca2.netlify.app/
+Path-finding algorithms visualization.
